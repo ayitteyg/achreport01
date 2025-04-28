@@ -1,0 +1,226 @@
+
+{% extends 'root/base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>export data</title>
+
+</head>
+<body>
+
+  {% block content %}
+
+  <header>
+    {% include 'root/navbar.html' %}
+  </header>
+
+
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        background-color: #f5f5f5;
+    }
+    .export-container {
+        background-color: rgb(35, 50, 61);
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 500px;
+        max-height: 70vh;
+        overflow-y: auto;
+        border: 1px solid #ccc;
+        margin-right: 20px
+        
+    }
+    h1 {    
+        text-align: center;
+        color: #333;
+        margin-bottom: 25px;
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: white;
+    }
+    select, input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+    }
+    .btn-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 25px;
+    }
+    button {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .btn-excel {
+        background-color: #217346;
+        color: white;
+    }
+    .btn-excel:hover {
+        background-color: #1a5f38;
+    }
+    .btn-pdf {
+        background-color: #d32f2f;
+        color: white;
+    }
+    .btn-pdf:hover {
+        background-color: #b71c1c;
+    }
+
+    @media (max-width: 768px) {
+        .export-container{
+            width: 80%;
+           
+        }
+    }
+
+</style>
+</head>
+<body>
+<div class="export-container">
+
+    <!-- Breadcrumbs -->
+    <div class="bread-crumb-div">
+        <ol class="breadcrumb text-center">
+          <li class="breadcrumb-item"><a class="fs-medium" href="{% url 'report_dashboard' %}"><i class="bi bi-arrow-return-left">Dashboard</i></a></li>
+        </ol>
+      </div>
+
+    <h4 class="fs-medium text-info">Data Export</h4>
+    <form method="GET" action="{% url 'export_church_data' %}">
+        <div class="form-group">
+            <label for="church">Church:</label>
+            <select name="church" id="church">
+                <option value="">All Churches</option>
+                <option value="Achimota">Achimota</option>
+                <option value="Prince of Peace">Prince of Peace</option>
+                <option value="King of Glory">King of Glory</option>
+                <option value="Nii Boi Town">Nii Boi Town</option>
+                <option value="Israel">Israel</option>
+            </select>
+        </div>
+        
+      
+        <div class="form-group">
+            <label for="start_date">Start Date:</label>
+            <input type="date" name="start_date" id="start_date"  required>
+        </div>
+        
+        <div class="form-group">
+            <label for="end_date">End Date:</label>
+            <input type="date" name="end_date" id="end_date" required>
+        </div>
+
+        <div class="models">
+            <label for="model">Select Data Type:</label>
+            <select name="model" id="model">
+                <option value="">select data</option>
+                {% for model in model_options %}
+                    <option value="{{ model }}">{{ model }}</option>
+                {% endfor %}
+            </select>
+        </div>
+       
+
+
+        <div id="field-checkboxes" class="form-group" style="display: none;">
+            <label>Select Fields to Export:</label>
+            <div id="fields-container" style="
+                max-height: 150px;
+                overflow-y: auto;
+                border: 1px solid #ccc;
+                padding: 10px;
+                border-radius: 5px;
+                background: #f9f9f9;
+            "></div>
+        </div>
+          
+
+        
+        <div class="btn-group">
+            <button type="submit" name="format" value="excel" class="btn-excel">Download Excel</button>
+            <button type="submit" name="format" value="pdf" class="btn-pdf">Download PDF</button>
+        </div>
+    </form>
+</div>
+
+
+<script>
+   
+    document.getElementById('model').addEventListener('change', function() {
+        const selectedModel = this.value;
+        const fieldContainer = document.getElementById('fields-container');
+        const checkboxWrapper = document.getElementById('field-checkboxes');
+    
+        if (!selectedModel) {
+            fieldContainer.innerHTML = '';
+            checkboxWrapper.style.display = 'none';
+            return;
+        }
+    
+        fetch(`/get-model-fields/?model=${selectedModel}`)
+            .then(response => response.json())
+            .then(data => {
+                const fields = data.fields;
+                if (fields.length > 0) {
+                    checkboxWrapper.style.display = 'block';
+
+                    fieldContainer.innerHTML = `
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <tbody>
+                                ${fields.map(field => `
+                                    <tr>
+                                        <td style="padding: 4px 8px; vertical-align: middle; width: 1%;">
+                                            <input type="checkbox" name="fields" value="${field}" checked>
+                                        </td>
+                                        <td style="padding: 4px 8px; vertical-align: middle;">
+                                            <label class="text-dark">${field.replace(/_/g, ' ')}</label>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+
+                    
+                } else {
+                    checkboxWrapper.style.display = 'none';
+                    fieldContainer.innerHTML = '';
+                }
+            });
+    });
+    
+
+</script>
+    
+
+
+  {% endblock %}
+
+</body>
+
+</html>

@@ -1,0 +1,131 @@
+{% extends 'root/base.html' %}
+{% load django_tables2 %}
+{% load static %}
+{% load custom_filters %}
+
+{% block content %}
+<!--header for navbar-->
+<header>{% include 'root/navbar.html' %}</header>
+
+<div class="container mt-4 text-center">
+   
+    <!-- Breadcrumbs -->
+    <div class="bread-crumb-div">
+        <ol class="breadcrumb text-center">
+            <li class="breadcrumb-item"><a class="fs-medium" href="{% url 'report_dashboard_local' %}"><p class="bi-graph-up-arrow btn btn-primary">&nbsp Dashboard</p></a></li>
+        </ol>
+    </div>
+
+  {% if monthly_summary  %}
+   <!-- <form method="get" action="{% url 'activity_report_local' %}" hx-get="{% url 'activity_report_local' %}" hx-target="#content" hx-swap="innerHTML">-->
+    <form method="get" action="{% url 'activity_report_local' %}">
+        <div class="row g-2">
+            <div class="my-3 py-1 text-center">
+                {{ filter.form.year }}
+                <button type="submit" class="btn btn-outline-primary bi bi-filter fs-medium">Filter</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="text-center fs-medium py-3">Department: {{user.department}}</div>
+    <div><a  class="btn btn-outline-primary mt-3 fs-medium" href="{% url 'export_data' %}">Generate Report</a></div>
+    
+    
+
+    <div class="table-responsive mt-3 box-element5">
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr class="fs-medium">
+                    <th>Month</th>
+                    <th>Total Activities</th>
+                    <th>View Details</th>
+                </tr>
+            </thead>
+            <tbody class="table-bordered border-dark">
+                {% for month in hierarchical_data %}
+                <tr id="month-{{ month.month }}">
+                    <td class="text-start">{{ month.month_name }}</td>
+                    <td>{{ month.total }}</td>
+                    <td>
+                        <i class="bi bi-caret-down toggle-month"
+                        data-month="{{ month.month }}"
+                        style="cursor: pointer; font-size:1.2rem;"></i>
+                    </td>
+                </tr>
+    
+                <!-- Department row (simplified since we only have one department) -->
+                <tr id="dept-row-{{ month.month }}" style="display: none;">
+                    <td colspan="3">
+                        
+                        
+                        {% for dept in month.departments %}
+                            {% for activity in dept.activities %}
+                            <div class="card mb-3 mx-auto" style="max-width: 100%;">
+                                <div class="row g-0 box-element">
+                                    <div class="col-md-12">
+                                        <div class="card-body text-center text-md-start">
+                                            <div class="d-flex flex-column justify-content-center" style="text-align: justify; text-justify: inter-word;">
+                                                <p class="mb-1"><strong>Date:</strong> {{ activity.date }}</p>
+                                                <p class="mb-1"><strong>Program:</strong> {{ activity.program }}</p>
+                                                <p class="mb-1"><strong>Type:</strong> {{ activity.typ }}</p>
+                                                <p class="mb-1"><strong>Facilitator:</strong> {{ activity.facilitator|default:"None" }}</p>
+                                                <p class="mb-1"><strong>Expense:</strong> {{ activity.expense|default:"0.00" }}</p>
+                                                <p class="mb-1"><strong>Income:</strong> {{ activity.income|default:"0.00" }}</p>
+                                                <p class="mb-1"><strong>Rating:</strong> {{ activity.rating_description|default:"-" }}</p>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <div class="alert alert-warning">
+                                No activities found for {{ month.month_name }}
+                            </div>
+                            {% endfor %}
+                        {% empty %}
+                        <div class="alert alert-warning">
+                            No department data available
+                        </div>
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" class="text-muted">No activity data found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+    </div>
+
+    {% else %}
+    <div class="text-center  no-report-div">
+        <h5 class="py-2"> No Activity / Program report submitted </h5>
+        <img class=" no-report-img" src="{% static 'images/no-report.avif' %}" alt="" width=450px height=400px>
+    </div>
+    
+    {% if request.user.department == 'Interest Coordinator' %}
+      <div>  <a  class="btn btn-outline-primary mt-3 fs-medium" href="{% url 'export_data' %}">Get Other Report</a> </div>
+    {% endif %}
+    
+
+    {% endif %}
+
+</div>
+
+<script>
+    document.addEventListener('click', function(event) {
+        // Toggle month to show activities (simplified since we only have one department)
+        if (event.target.classList.contains('toggle-month')) {
+            const month = event.target.getAttribute('data-month');
+            const row = document.getElementById(`dept-row-${month}`);
+            row.style.display = row.style.display === 'none' ? '' : 'none';
+            event.target.classList.toggle('bi-caret-down');
+            event.target.classList.toggle('bi-caret-up');
+        }
+    });
+</script>
+
+{% endblock %}

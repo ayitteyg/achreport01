@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+{% extends 'tempt/base.html' %}
+{% load static %}
+{% load humanize %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>user-account-creation</title>
+</head>
+
+
+<body>
+ {% block content %}
+    <header>
+         <br>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item textSM"><a href="{% url 'usrlogin' %}">Login</a></li>
+            </ol>
+          </nav>
+
+          <center>
+
+              <section class="vh-100">
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col-9-sm-9 text-black">
+                      <br><br>
+              
+                      <div class="px-5 ms-xl-4">
+                        <img  class="img" src="{% static "img/usr1.png" %}" alt="">
+                      </div>
+              
+                      <div class=" box-element align-items-center h-custom-2 px-5 ms-xl-4 mt-5 pt-5 pt-xl-0 mt-xl-n5">
+
+                        <form action="{% url 'createuser' %}"  style="width: 43rem;"  method="post">
+                          {% csrf_token %}
+                            
+                          <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Create Account</h5>
+                          <hr>
+              
+                                {% include 'tempt/formTemplate.html' with form=form %} 
+                                <br>
+              
+                          <div class="pt-1 mb-4">
+                            <button class="btn btn-info btn-lg btn-block" type="submit">Submit</button>
+                          </div>
+                          
+                          <div>
+                            <p class="small mb-5 pb-lg-2"><a class="text-muted" href="{% url "usrlogin" %}">Already have account?</a>
+                              <a class="fa fa-refresh textSM" style="font-size:10px;color:red" href="{% url 'register' %}">Clear</a>
+                            </p>
+                            
+                         
+
+
+                          </div>
+                          
+                        </form>
+              
+                      </div>
+              
+                    </div>
+                    
+                  </div>
+                </div>
+              </section>
+                  
+          </center>        
+    
+  
+      {% endblock %}
+</body>
+</html>
+

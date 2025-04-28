@@ -1,0 +1,91 @@
+{% extends 'root/base.html' %}
+{% load django_tables2 %}
+{% load static %}
+
+{% block content %}
+<header>{% include 'root/navbar.html' %}</header>
+
+<div class="container mt-4">
+    <!-- Breadcrumbs -->
+    <div class="bread-crumb-div">
+        <ol class="breadcrumb text-center">
+            <li class="breadcrumb-item">
+                <a class="fs-medium" href="{% url 'report_dashboard_local' %}">
+                    <p class="bi-graph-up-arrow btn btn-primary">&nbsp Dashboard</p>
+                </a>
+            </li>
+        </ol>
+    </div>
+
+    {% if monthly_summary %}
+    <form method="get" class="mb-4">
+        <div class="row justify-content-center">
+            <div class="col-md-3">
+                {{ filter.form.year }}
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-filter"></i> Filter
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <div class="text-center mb-4">
+        <h4>Church: {{ user_church }}</h4>
+    </div>
+
+    <div class="table-responsive mb-5">
+        {% render_table table %}
+    </div>
+
+    {% if selected_month %}
+    <div class="card mb-5">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                {{ selected_month|month_name }} Visitor Details
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Date</th>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>Contact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for visitor in hierarchical_data.0.visitors %}
+                        <tr>
+                            <td>{{ visitor.date }}</td>
+                            <td>{{ visitor.name }}</td>
+                            <td>
+                                <span class="badge {% if visitor.status == 'adventist' %}bg-success{% else %}bg-primary{% endif %}">
+                                    {{ visitor.get_status_display }}
+                                </span>
+                            </td>
+                            <td>{{ visitor.contact|default:"-" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-muted">No visitors found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="text-center no-report-div">
+        <h4 class="py-2">No Visitor Records Found</h4>
+        <img class="no-report-img" src="{% static 'images/no-report.avif' %}" alt="" width=500 height=450>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

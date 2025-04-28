@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+{% extends 'root/base.html' %} {% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Achimota.sda.reports</title>
+    
+    <!-- Make sure these are included before your custom JS -->
+  </head>
+
+  <body style="height:100vh">
+    {% block content %}
+
+    <section>
+      <div class="custom-shape-divider-bottom-1743184445">
+        <svg
+          data-name="Layer 1"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 1200 120"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z"
+            class="shape-fill"
+          ></path>
+        </svg>
+      </div>
+    </section>
+
+    <div class="login-container">
+      <img src="{% static 'images/sda.png' %}" alt="Logo" class="login-logo" />
+      <h5 class="text-infox">ach.reports.01</h5>
+      <form action="{% url 'login' %}" method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+          <label style="color:black" for="username">Username</label>
+          <input type="text" id="username" name="username" list="username-suggestions" autocomplete="off" required>
+          <datalist id="username-suggestions">
+            <!-- Options will be populated by JavaScript -->
+          </datalist>
+        </div>
+        <div class="form-group">
+            <label for="password" style="color: rgb(35, 50, 61)">Password</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit" class="login-btn">Login</button>
+     </form>
+      <a href="#" class="forgot-password text-info">Forgot Password?</a>
+    </div>
+
+
+    <script>
+      const usernameInput = document.getElementById('username');
+      const datalist = document.getElementById('username-suggestions');
+      
+      usernameInput.addEventListener('input', async (e) => {
+        const query = e.target.value.trim();
+        
+        if (query.length >= 2) { // Only search after 2 characters
+          try {
+            const response = await fetch(`/get_users/?q=${encodeURIComponent(query)}`);
+            const usernames = await response.json();
+            
+            // Clear previous options
+            datalist.innerHTML = '';
+            
+            // Add new options
+            usernames.forEach(username => {
+              const option = document.createElement('option');
+              option.value = username;
+              datalist.appendChild(option);
+            });
+          } catch (error) {
+            console.error('Error fetching usernames:', error);
+          }
+        }
+      });
+      </script>    
+
+
+    
+      {% endblock %}
+
+  </body>
+</html>

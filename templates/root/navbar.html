@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+
+
+<body>
+
+  <nav class="navbar navbar-expand-lg fixed-top nav-style box-elementt">
+    <div class="container-fluid">
+
+     <a class="hide-logo" href="{% url 'homepage' %}"><img src="{% static 'images/sda.png' %}" alt="Logo" class="logo"></a> 
+      <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+       <!--   <span class="navbar-toggler-icon"></span> -->
+      <a class="navbar-brand" href="#"><img src="{% static 'images/sda.png' %}" alt="Logo" class="logo"></a>
+      </button>
+
+
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+        <div class="offcanvas-header">
+          <a class="navbar-brand" href="{% url 'homepage' %}"><img src="{% static 'images/sda.png' %}" alt="Logo" class="logo"></a>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body  nav-style">
+          <ul class="navbar-nav justify-content-center flex-grow-1 pe-5">
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="{% url 'homepage' %}">Home</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="{% url 'admin_redirect' %}">Admin</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="#"></a>
+            </li>
+          </ul>
+          
+          <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button class="btn btn-primary btn-txt" type="submit">Logout</button>
+           </form>
+
+        </div>
+      </div>
+    </div>
+  </nav>
+ 
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

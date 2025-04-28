@@ -1,0 +1,146 @@
+[
+    {
+        "church": "Achimota",
+        "date": "2025-01-11",
+        "name": "1 Edmond Osei Akoto",
+        "place": "Achimota",
+        "status": "non_adventist",
+        "contact": "0599489946"
+    },
+    {
+        "church": "Achimota",
+        "date": "2025-01-11",
+        "name": "Emmanuella Okyere",
+        "place": "Achimota School",
+        "status": "adventist",
+        "contact": "0596609679"
+    },
+    {
+        "church": "Achimota",
+        "date": "2025-01-18",
+        "name": "Isaac Koffie",
+        "place": "Aketeyman",
+        "status": "non_adventist",
+        "contact": "0244588772"
+    },
+    {
+        "church": "Achimota",
+        "date": "2025-01-18",
+        "name": "Rhoda Asomani",
+        "place": "Irene clinic",
+        "status": "adventist",
+        "contact": "0593828082"
+    },
+    {
+        "church": "Nii Boi Town",
+        "date": "2025-02-22",
+        "name": "Michael",
+        "place": "Lapaz",
+        "status": "non_adventist",
+        "contact": ""
+    },
+    {
+        "church": "Achimota",
+        "date": "2025-02-01",
+        "name": "Ellen Addai",
+        "place": "Alogoshe",
+        "status": "adventist",
+        "contact": "0241190430"
+    },
+    {
+        "church": "Achimota",
+        "date": "2025-02-01",
+        "name": "Dr Richard Odi",
+        "place": "New Fadama",
+        "status": "adventist",
+        "contact": "0247098937"
+    },
+    {
+        "church": "Achimota",
+        "date": "2025-02-08",
+        "name": "Agather Frimpong",
+        "place": "Achimota",
+        "status": "adventist",
+        "contact": "0246989599"
+    },
+    {
+        "church": "Achimota",
+        "date": "2025-02-08",
+        "name": "Ekum Mary forson",
+        "place": "Achimota",
+        "status": "non_adventist",
+        "contact": ""
+    },
+    {
+        "church": "Achimota",
+        "date": "2025-02-08",
+        "name": "Comfort Adu",
+        "place": "Achimota",
+        "status": "adventist",
+        "contact": "0591610419"
+    },
+    {
+        "church": "Israel",
+        "date": "2025-03-22",
+        "name": "Maame Regina Tiwaah",
+        "place": "United kingdom",
+        "status": "adventist",
+        "contact": ""
+    },
+    {
+        "church": "Israel",
+        "date": "2025-03-22",
+        "name": "Kofi Boateng",
+        "place": "Abetifi",
+        "status": "non_adventist",
+        "contact": "0240822390"
+    },
+    {
+        "church": "Israel",
+        "date": "2025-03-22",
+        "name": "Sister cecilia kutu",
+        "place": "Tantar Hill",
+        "status": "non_adventist",
+        "contact": "0248396001"
+    },
+    {
+        "church": "Nii Boi Town",
+        "date": "2025-03-22",
+        "name": "Mr. Boadi",
+        "place": "Lapaz",
+        "status": "adventist",
+        "contact": "0555219638"
+    },
+    {
+        "church": "Nii Boi Town",
+        "date": "2025-03-22",
+        "name": "Janet Donkor",
+        "place": "Lapaz",
+        "status": "adventist",
+        "contact": "0558688740"
+    },
+    {
+        "church": "Nii Boi Town",
+        "date": "2025-03-29",
+        "name": "Abigail Ankomag",
+        "place": "Bogoso",
+        "status": "non_adventist",
+        "contact": "0530900871"
+    },
+    {
+        "church": "Israel",
+        "date": "2025-03-29",
+        "name": "Ama Dufie",
+        "place": "Kumasi",
+        "status": "adventist",
+        "contact": "0542010140"
+    },
+    {
+        "church": "Nii Boi Town",
+        "date": "2025-04-05",
+        "name": "Dickson",
+        "place": "Abeka",
+        "status": "adventist",
+        "contact": "0551091500"
+    }
+]

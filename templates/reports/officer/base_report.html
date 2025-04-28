@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+{% extends 'root/base.html' %}
+{% load crispy_forms_tags %}
+
+{% load static %}
+
+<html lang="en">
+ 
+
+  <body class="">
+    {% block content %}
+
+    <!--header for navbar-->
+    <header>{% include 'root/navbar.html' %}</header>
+
+    <!--page sections-->
+    <section class="container my-5">
+      <!-- Breadcrumbs -->
+      <div class="bread-crumb-div">
+        <ol class="breadcrumb text-center">
+          <li class="breadcrumb-item"><a class="fs-medium" href="{% url 'report_dashboard_of' %}"><i class="bi bi-arrow-return-left">Dashboard</i></a></li>
+          <li class="breadcrumb-item"  data-bs-toggle="offcanvas" data-bs-target="#sidebar"><a class="fs-medium" href="#">Reports</a></li>
+          <li class="breadcrumb-item active fs-medium" aria-current="page" id="breadcrumb-title">
+            
+          </li>
+        </ol>
+      </div>
+
+      <div class="row">
+        <!-- Offcanvas Sidebar -->
+        <div class="offcanvas offcanvas-left" tabindex="-1" id="sidebar" aria-labelledby="sidebarLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title fs-medium" id="sidebarLabel">Reports</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+          </div>
+          <div class="offcanvas-body">
+            <ul class="list-group fs-medium">
+              <li class="list-group-item">
+                <a id="baptism-link" href="#" onclick="changeBreadCrumbTitle(id)" 
+                   hx-get="{% url 'baptism_report_of' %}" 
+                   hx-target="#content" 
+                   hx-swap="innerHTML" 
+                   data-bs-dismiss="offcanvas" 
+                   class="list-group-item list-group-item-action">
+                  Baptism Report
+                </a>
+              </li>
+          
+              <li class="list-group-item fs-medium">
+                <a id="transfer-link" href="#" onclick="changeBreadCrumbTitle(id)" 
+                   hx-get="{% url 'transfer_report_of' %}" 
+                   hx-target="#content" 
+                   hx-swap="innerHTML" 
+                   data-bs-dismiss="offcanvas" 
+                   class="list-group-item list-group-item-action">
+                  Transfer Report
+                </a>
+              </li>
+
+               <li class="list-group-item fs-medium">
+                <a id="attendance-link" href="#" onclick="changeBreadCrumbTitle(id)" 
+                   hx-get="{% url 'attendance_report_of' %}" 
+                   hx-target="#content" 
+                   hx-swap="innerHTML" 
+                   data-bs-dismiss="offcanvas" 
+                   class="list-group-item list-group-item-action">
+                  Service Attendance Report
+                </a>
+              </li> 
+
+
+              <li class="list-group-item fs-medium">
+                <a id="visitor-link" href="#" onclick="changeBreadCrumbTitle(id)" 
+                   hx-get="{% url 'visitor_report_of' %}" 
+                   hx-target="#content" 
+                   hx-swap="innerHTML" 
+                   data-bs-dismiss="offcanvas" 
+                   class="list-group-item list-group-item-action">
+                  Visitors 
+                </a>
+              </li> 
+
+              <li class="list-group-item fs-medium">
+                <a id="event-link" href="#" onclick="changeBreadCrumbTitle(id)" 
+                   hx-get="{% url 'event_report_of' %}" 
+                   hx-target="#content" 
+                   hx-swap="innerHTML" 
+                   data-bs-dismiss="offcanvas" 
+                   class="list-group-item list-group-item-action">
+                  Events & Ceremonies 
+                </a>
+              </li> 
+
+              <li class="list-group-item fs-medium">
+                <a id="dedication-link" href="#" onclick="changeBreadCrumbTitle(id)" 
+                   hx-get="{% url 'dedication_report_of' %}" 
+                   hx-target="#content" 
+                   hx-swap="innerHTML" 
+                   data-bs-dismiss="offcanvas" 
+                   class="list-group-item list-group-item-action">
+                 Baby Dedications
+                </a>
+              </li> 
+
+
+
+              <li class="list-group-item fs-medium">
+                <a id="activity-link" href="#" onclick="changeBreadCrumbTitle(id)" 
+                   hx-get="{% url 'activity_report_of' %}" 
+                   hx-target="#content" 
+                   hx-swap="innerHTML" 
+                   data-bs-dismiss="offcanvas" 
+                   class="list-group-item list-group-item-action">
+                 Programs & Activities
+                </a>
+              </li>
+
+
+
+            </ul>
+          </div>
+        </div>
+
+        <!-- Dynamic Content Area with Initial State -->
+        <div class="container mt-4 text-center">
+          <div id="content">
+            <!-- Default Content -->
+            <div class="card shadow-sms border-0">
+              <div class="card-body py-5">
+                <i class="bi bi-graph-up" style="font-size: 3rem; color: #6c757d;"></i>
+                <h5 class="mt-3 text-muted fs-medium">Report Dashboard</h5>
+                <p class="lead text-muted fs-medium">Select a report from the sidebar to view data</p>
+                <button class="btn btn-primary mt-3" 
+                        data-bs-toggle="offcanvas" 
+                        data-bs-target="#sidebar">
+                  <i class="bi bi-list fs-medium"></i> View Reports
+                </button>
+
+                <a  class="btn btn-outline-primary mt-3" href="{% url 'export_data_dist' %}">Export Data</a>
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> 
+    </section>
+
+    <script>
+      // Handle breadcrumb updates
+      function changeBreadCrumbTitle(id) {
+        const titles = {
+          'baptism-link': 'Baptism Report',
+          'attendance-link': 'Attendance Report', 
+          'transfer-link': 'Transfer Report'
+        };
+        document.getElementById('breadcrumb-title').textContent = titles[id] || 'Dashboard';
+      }
+      
+      // Initialize default breadcrumb
+      document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('breadcrumb-title').textContent = 'Dashboard';
+      });
+    </script>
+
+    {% endblock %}
+</body>
+
+
+</html>

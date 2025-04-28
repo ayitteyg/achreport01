@@ -1,0 +1,32 @@
+
+{% extends 'root/base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Baptism Chart</title>
+
+</head>
+<body>
+
+  {% block content %}
+
+  <header>
+    {% include 'root/navbar.html' %}
+  </header>
+
+  <div class="container">
+    <canvas id="baptismChart" width="400" height="400"></canvas>
+  </div>
+
+  <script>
+    const baptismChartData = {{ charts.baptismChart|safe }};
+  </script>
+
+  {% endblock %}
+
+</body>
+
+</html>

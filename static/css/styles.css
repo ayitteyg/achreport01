@@ -1,0 +1,592 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inconsolata:wght@200..900&display=swap');
+* {
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+    box-sizing: border-box;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+a {
+    text-decoration: none;
+}
+
+.text-white {
+    color: #FFF;
+}
+
+.fs-small {
+    font-size: 15px;
+}
+
+.fs-medium {
+    font-size: 15px;
+}
+
+.card {
+    border: None !important;
+}
+
+.bg-card {
+    backdrop-filter: blur(16px) saturate(180%);
+    /* -webkit-backdrop-filter: blur(16px) saturate(180%); */
+    background-color: var(--main-bg-color);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.125);
+}
+
+:root {
+    --main-bg-color: rgb(35, 50, 61);
+    --main-text-color-phone: white;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    /* align-items: center; */
+    height: 100vh;
+    /* background: var(--main-bg-color); */
+    padding-top: 70px;
+    /* Adjust based on your navbar height */
+}
+
+.login-btn {
+    width: 50%;
+    padding: 10px;
+    border: none;
+    background: var(--main-bg-color);
+    ;
+    color: white;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.login-btn:hover {
+    background: #263b51;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    /* font-weight: bold; */
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.forgot-password {
+    display: block;
+    margin-top: 10px;
+    text-decoration: none;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+.box-element {
+    box-shadow: 02px 04px 2px var(--main-bg-color);
+    border-radius: 0px;
+    padding: 10px;
+    margin: 0;
+}
+
+.btn-logout {
+    background: rgba(11, 56, 88, 0.901);
+}
+
+.navbar-toggler {
+    border: none !important;
+}
+
+.nav-style {
+    /* background: #becad6; */
+    background: var(--main-bg-color);
+    /* box-shadow: 0px 14px 16px rgba(0, 0, 0, 0.208); */
+    color: var(--main-bg-color);
+}
+
+.nav-link {
+    color: white;
+}
+
+.navbar-toggler-icon {
+    background: white;
+}
+
+.login-container {
+    /* background: var(--main-bg-color); */
+    padding: 1.5rem;
+    border-radius: 10px;
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+    margin-top: 10px;
+}
+
+.login-logo {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 1rem;
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 1rem;
+    background-color: transparent;
+}
+
+.login-container h5 {
+    margin-bottom: 2rem;
+    color: var(--main-bg-color);
+    font-family: "Bebas Neue", serif;
+}
+
+.btn-logout {
+    background: rgba(11, 56, 88, 0.901);
+}
+
+#report-menu-head h4 {
+    justify-content: center;
+    margin-bottom: 2rem;
+    margin-top: 30px;
+    color: #333;
+    font-family: "Bebas Neue", serif;
+    padding: 10px;
+}
+
+.homepage-img {
+    width: 70%;
+    height: 350px;
+}
+
+.homepage-img-div-0 {
+    width: 100%;
+    border-right: 1px solid black;
+}
+
+.submit-report-btn {
+    height: 85px;
+    /* width: 180px; */
+    background: var(--main-bg-color);
+    color: white;
+    transition: 0.3s ease-in-out;
+    border: none;
+    padding: 25px;
+    /* margin: 20px 0px; */
+    border-radius: 4px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.submit-form-btn {
+    height: 65px;
+    /* width: 180px; */
+    background: var(--main-bg-color);
+    color: rgb(0, 255, 191);
+    transition: 0.3s ease-in-out;
+    border: none;
+    padding: 25px;
+    /* margin: 20px 0px; */
+    border-radius: 4px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.submit-report-btn:hover {
+    border: none;
+    color: white;
+    background-color: #146884;
+}
+
+.submit-form-btn:hover {
+    border: none;
+    color: white;
+}
+
+.btn-close {
+    background-color: white;
+}
+
+.form-text {
+    /* color: white !important; */
+    /* Change help text color to white */
+    font-size: 14px;
+    /* Optional: Adjust font size */
+}
+
+
+/* Style for all input fields in the form */
+
+.form-control {
+    /* color: white; */
+    /* Text color for input fields */
+    /* background-color: #333; */
+    /* Background color for input fields */
+    border: 1px solid #555;
+    /* Border color */
+    font-size: 16px;
+    /* Font size */
+    padding: 10px;
+    /* Padding inside the input */
+    border-radius: 5px;
+    /* Rounded corners */
+}
+
+
+/* Style for textarea (for multiline fields like 'remarks') */
+
+.form-control.textarea {
+    height: 150px;
+    /* Adjust height for textarea */
+    resize: none;
+    /* Disable resizing */
+}
+
+
+/* Optional: Style for the label (if needed) */
+
+label {
+    color: wheat;
+    /* Label text color */
+    font-size: 14px;
+}
+
+
+/* Remove default list styling */
+
+.data-nav-list {
+    list-style: none;
+    margin: 0;
+    max-height: 400px;
+    /* Set a fixed height */
+    overflow-y: auto;
+    /* Enable vertical scrolling */
+    /* border: 1px solid #ddd; */
+    /* Optional: Add a border for clarity */
+    padding: 20px;
+    /* Prevent scrollbar overlap with text */
+}
+
+
+/* Style the list items */
+
+.data-nav-container {
+    display: flex;
+    justify-content: center;
+    /* Centers the list horizontally */
+    align-items: center;
+    /* Centers vertically if parent has a height */
+    height: 100%;
+    /* Ensure parent container has a height */
+}
+
+.data-nav-list {
+    display: block;
+    flex-wrap: wrap;
+    /* Allows wrapping if items overflow */
+    list-style: none;
+    /* Removes bullet points */
+    padding: 0;
+    margin: 0;
+    gap: 10px;
+    /* Adds spacing between items */
+}
+
+.data-nav-list li {
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+
+/* Style the anchor tags as buttons */
+
+.data-nav-list li a {
+    display: flex;
+    width: 800px;
+    text-decoration: none;
+    padding: 20px;
+    background-color: var(--main-bg-color);
+    color: white;
+    margin-right: 50px;
+    border-radius: 5px;
+    /* text-align: center; */
+    transition: background 0.3s ease-in-out;
+    /* justify-content: center; */
+}
+
+
+/* Hover effect */
+
+.data-nav-list li a:hover {
+    background-color: rgba(11, 56, 88, 0.775);
+}
+
+.bread-crumb-div {
+    display: grid;
+    place-items: center;
+    /* Centers both horizontally & vertically */
+}
+
+.bread-crumb-text {
+    font-size: 20px;
+    font-family: "Bebas Neue", serif;
+    color: blue
+}
+
+.bread-crumb-text-active {
+    font-size: 20px;
+    font-family: "Bebas Neue", serif;
+    color: grey
+}
+
+.modal-title {
+    font-family: "Bebas Neue", serif;
+    font-size: 13;
+}
+
+.modal-content {
+    background-color: var(--main-bg-color);
+    color: white;
+    font-size: 12px;
+}
+
+.modal-body {
+    max-height: 80vh;
+    /* Limits modal body height to 70% of viewport height */
+    overflow-y: auto;
+    /* Enables vertical scrolling */
+}
+
+
+/* data tables css  */
+
+.highlighted-row {
+    background-color: yellow;
+    /* Or your preferred highlight color */
+}
+
+
+/* Add this to your CSS */
+
+
+/* media responsive */
+
+@media (max-width: 768px) {
+    /* body {
+        background: var(--main-bg-color-phone);
+    } */
+    .login-container {
+        width: 80%;
+    }
+    .login-btn {
+        width: 100px;
+        font-size: 13px;
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    }
+    .forgot-password {
+        font-size: 13px;
+    }
+    .nav-link {
+        font-family: "Bebas Neue", serif;
+        font-size: 17px;
+        color: grey
+    }
+    .hide-logo {
+        display: none !important;
+    }
+    .homepage-img-div-0 {
+        width: 100%;
+        border-bottom: 1px solid black;
+    }
+    .homepage-img-div-1 {
+        width: 100%;
+        border-left: 1px solid black;
+    }
+    .homepage-img {
+        width: 90%;
+        height: 300px;
+    }
+    .submit-report-btn {
+        padding: 15px;
+        font-size: 13px;
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    }
+    label {
+        color: #ccc;
+        /* Label text color */
+        font-size: 12px;
+    }
+    .form-text {
+        /* color: rgba(255, 255, 255, 0.737) !important; */
+        font-size: 12px;
+    }
+    .fs-medium {
+        font-size: 13px;
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    }
+    td {
+        font-size: 12px;
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    }
+    thead {
+        font-size: 12px;
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    }
+    .swal-title {
+        font-size: 0.6em;
+    }
+    .swal-content,
+    .swal-confirm-button,
+    .swal-cancel-button {
+        font-size: 0.5em;
+    }
+    .swal2-popup {
+        border-radius: 10px;
+        width: 80%;
+        /* Adjust as needed */
+        max-width: 400px;
+        /* Adjust as needed */
+    }
+    .bread-crumb-text {
+        font-size: 15px;
+        font-family: "Bebas Neue", serif;
+        color: blue
+    }
+    .bread-crumb-text-active {
+        font-size: 15px;
+        font-family: "Bebas Neue", serif;
+        color: grey
+    }
+    .data-nav-list li a {
+        font-size: 15px;
+        font-family: "Bebas Neue", serif;
+        width: 100%;
+        margin-right: 100px;
+    }
+    .modal-content {
+        background-color: var(--main-bg-color);
+        color: white;
+        font-size: 12px;
+    }
+    select {
+        font-size: 13px;
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    }
+    .no-report-img {
+        width: 40vh;
+        height: 40vh;
+        background-color: #f44336;
+    }
+    .no-report-div h4 {
+        font-family: "Bebas Neue", serif;
+        font-size: 17px;
+        color: grey;
+        margin-bottom: 40px;
+    }
+    .report-action-btn {
+        display: flex;
+        flex-direction: column;
+        /* Display horizontally by default */
+        gap: 2px;
+        /* Add some space between the buttons */
+    }
+}
+
+.custom-shape-divider-bottom-1743184445 {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+}
+
+.custom-shape-divider-bottom-1743184445 svg {
+    position: relative;
+    display: block;
+    width: calc(105% + 1.3px);
+    height: 117px;
+}
+
+.custom-shape-divider-bottom-1743184445 .shape-fill {
+    fill: #23323D;
+}
+
+
+/* alet dialog */
+
+.swal-title {
+    font-size: 0.9em;
+    /* Adjust as needed */
+    color: white;
+}
+
+.swal-content {
+    font-size: 0.5em;
+    color: white;
+    /* Adjust as needed */
+}
+
+.swal-confirm-button,
+.swal-cancel-button {
+    font-size: 1em;
+    /* Adjust as needed */
+}
+
+.swal2-popup {
+    border-radius: 10px;
+    width: 90%;
+    /* Adjust as needed */
+    max-width: 500px;
+    /* Adjust as needed */
+    background-color: var(--main-bg-color);
+}
+
+.swal-confirm-button {
+    background-color: #4CAF50;
+    /* Green */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1em;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.swal-cancel-button {
+    background-color: #f44336;
+    /* Red */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1em;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.swal-confirm-button:hover,
+.swal-cancel-button:hover {
+    opacity: 0.8;
+}
+
+.swal2-focus-ring {
+    box-shadow: none;
+}

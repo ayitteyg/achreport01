@@ -1,0 +1,106 @@
+{% extends 'root/base.html' %}
+{% load django_tables2 %}
+{% load static %}
+{% load custom_filters %}
+
+{% block content %}
+
+<form method="get" action="{% url 'dedication_report_dist' %}" hx-get="{% url 'dedication_report_dist' %}" hx-target="#content" hx-swap="innerHTML">
+    <div class="row g-2">
+        <div class="my-3 py-1 text-center">
+            <h6 class="btn btn-outline-primary mt-3 fs-medium"> <i class="bi bi-person-heart"></i>  {{request.user.church}} </h6>
+        </div>
+    </div>
+</form>
+
+<div class="table-responsive mt-3 box-elementt">
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>Year</th>
+                <th>No. of Children Dedicated</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody class="table-bordered border-success">
+            {% for year in yearly_summary %}
+                <tr id="year-{{ year.year }}">
+                    <td>{{ year.year }}</td>
+                    <td>{{ year.total }}</td>
+                    <td>
+                        <i class="bi bi-caret-down toggle-details"
+                           data-year="{{ year.year }}"
+                           style="cursor: pointer; font-size:1.2rem;"></i>
+                    </td>
+                </tr>
+
+                <tr id="details-row-{{ year.year }}" style="display: none;">
+                    <td colspan="3">
+                        <table class="table table-sm table-bordered mb-0">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Child Name</th>
+                                    <th>Date</th>
+                                    <th>Detail</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-success border-success">
+                                {% for child in summary_data|get_item_:year.year %}
+                                    <tr>
+                                        <td  class="text-start">{{ child.child_name }}</td>
+                                        <td>{{ child.date }}</td>
+                                        <td>
+                                            <i class="bi bi-caret-down toggle-card"
+                                               data-child="{{ forloop.counter }}"
+                                               style="cursor: pointer; font-size:1.2rem;"></i>
+                                        </td>
+                                    </tr>
+                                    <tr id="card-row-{{ forloop.counter }}" style="display: none;">
+                                        <td colspan="3">
+                                            <div class="card mb-3" style="max-width: 100%;">
+                                                <div class="row g-0 box-element">
+                                                    <div class="col-md-10">
+                                                        <div class="card-body">
+                                                            <p class="mb-1"><strong>Mother:</strong> {{ child.mother_name }}</p>
+                                                            <p class="mb-1"><strong>Father:</strong> {{ child.father_name }}</p>
+                                                            <p class="mb-1"><strong>Date of Birth:</strong> {{ child.date_of_birth }}</p>
+                                                            <p class="mb-0"><strong>Place of Birth:</strong> {{ child.place_of_birth }}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    document.addEventListener('click', function(event) {
+        // Toggle yearly details
+        if (event.target.classList.contains('toggle-details')) {
+            const year = event.target.getAttribute('data-year');
+            const row = document.getElementById(`details-row-${year}`);
+            row.style.display = row.style.display === 'none' ? '' : 'none';
+            event.target.classList.toggle('bi-caret-down');
+            event.target.classList.toggle('bi-caret-up');
+        }
+
+        // Toggle dedication detail card
+        if (event.target.classList.contains('toggle-card')) {
+            const id = event.target.getAttribute('data-child');
+            const row = document.getElementById(`card-row-${id}`);
+            row.style.display = row.style.display === 'none' ? '' : 'none';
+            event.target.classList.toggle('bi-caret-down');
+            event.target.classList.toggle('bi-caret-up');
+        }
+    });
+</script>
+
+{% endblock %}

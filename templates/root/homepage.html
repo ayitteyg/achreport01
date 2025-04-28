@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+{% extends 'root/base.html' %} {% load static %}
+<html lang="en">
+  <body class="">
+    {% block content %}
+
+    <!--header for navbar-->
+    <header>{% include 'root/navbar.html' %}</header>
+
+    <!--page sections-->
+
+    <section class="container my-5">
+      <center>
+        <div id="report-menu-head">
+          <h4 class="text-info">ACH.Reports</h4>
+        </div>
+      </center>
+
+      <div class="row">
+        <!-- First Column -->
+        <div class="col-md-6 col-12">
+          <div class="container-fluid">
+            <div class="p-4 rounded homepage-img-div-0">
+              <img
+                src="{% static 'images/data-2.png' %}"
+                alt="img"
+                class="homepage-img"
+              />
+              <a class="submit-report-btn" href="{% url 'submitforms' %}"
+                >Submit Reports</a
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- second Column -->
+        <div class="col-md-6 col-12">
+          <div class="container-fluid">
+            <div class="p-4 rounded homepage-img-div-1">
+              <img
+                src="{% static 'images/report2.png' %}"
+                alt="img"
+                class="homepage-img"
+              />
+            <a class="submit-report-btn" href="{{report_url}}">
+                View Reports</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {% endblock %}
+  </body>
+</html>

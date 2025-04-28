@@ -1,0 +1,130 @@
+
+{% extends 'root/base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Baptism Chart</title>
+
+</head>
+<body>
+
+  {% block content %}
+
+  <header>
+    {% include 'root/navbar.html' %}
+  </header>
+
+
+  
+  <section class="container my-1">
+ 
+    <div class="bread-crumb-div py-3">
+         <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item active" aria-current="page"><a class="bread-crumb-text-active" href="{% url 'homepage' %}">Home</a></li>
+              <li class="breadcrumb-item active" aria-current="page"><a class="bread-crumb-text-active" href="#">Chart</a></li>
+            </ol>
+          </nav>
+    </div>
+      
+
+    <div class="container">
+
+        <div class="row">
+
+                    
+            <div class="container">
+              <div class="filters text-center">
+                <form method="get" action="{% url 'plotly_dashboard' %}">
+                  
+                  <select name="year">
+                    <option value="">Year</option>
+                    {% for y in years %}
+                    <option value="{{y}}" {% if request.GET.year == 'y' %}selected{% endif %}>{{y}}</option>
+                    {% endfor %}
+                  </select>
+                
+
+                  <!-- Month -->
+                  <select name="month">
+                    <option value="">Month</option>
+                    {% for key, value in months.items %}
+                      <option value="{{ key }}" {% if request.GET.month == key|stringformat:"s" %}selected{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                  </select>
+
+                  <!-- Quarter -->
+                  <select name="quarter">
+                    <option value="">Quarter</option>
+                    {% for key, value in quarters.items %}
+                      <option value="{{ key }}" {% if request.GET.quarter == key|stringformat:"s" %}selected{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                  </select>
+
+                  <button class="btn btn-info" type="submit">Filter</button>
+                </form>
+              </div>
+            </div>
+
+
+            {% for chart in charts %}
+            <div class="col-lg-6 col-md-2 py-3"  data-aos="zoom-in-up"  data-aos-duration="3000">
+                <div class="card">
+                <div class="card-body bg-card">
+                    <h5 class="text-white fs-medium">{{ chart.name|title }}s &nbsp: {{chart.total}} </h5>
+
+                    <div class="container">
+                      <div id="{{ chart.id }}"></div>
+                    </div>
+                   
+                    <a  href="#" class="btn btn-primary form-text">submit</a>
+                </div>
+                </div>
+            </div>
+            {% endfor %}
+    </div>
+    </div>
+  </section>
+
+
+
+
+
+
+
+
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+  <script>
+    {% for chart in charts %}
+      console.log({{ chart.data|safe }});  // Debugging
+  
+      var chartData = {{ chart.data|safe }};
+  
+      // Add text to show values on top of bars
+      chartData.data[0].text = chartData.data[0].y;  // Use y values (counts) for the text
+      chartData.data[0].textposition = 'auto';  // Automatically adjust text position
+      chartData.data[0].textfont = {  // Optional: Adjust font size and style
+        size: 14,
+        color: 'black'  // You can adjust this color as needed
+      };
+  
+      // Hide y-axis ticks
+      chartData.layout.yaxis.showticklabels = false;
+  
+      // Plot the chart with updated data
+      Plotly.newPlot('{{ chart.id }}', chartData.data, chartData.layout);
+    {% endfor %}
+  </script>
+  
+  
+
+  {% endblock %}
+
+</body>
+
+
+</html>

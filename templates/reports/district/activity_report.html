@@ -1,0 +1,128 @@
+{% extends 'root/base.html' %}
+{% load django_tables2 %}
+{% load static %}
+{% load custom_filters %}
+
+
+{% block content %}
+
+<form method="get" action="{% url 'activity_report_dist' %}" hx-get="{% url 'activity_report_dist' %}" hx-target="#content" hx-swap="innerHTML">
+    <div class="row g-2">
+        <div class="my-0 py-0 text-center">
+            <h6 class="btn btn-outline-primary mt-3 fs-medium"> <i class="bi bi-person-heart"></i>  {{request.user.church}} </h6>
+        </div>
+        <div class="my-3 py-1 text-center">
+            {{ filter.form.year }}
+            <button type="submit" class="btn btn-outline-primary bi bi-filter fs-medium">Filter</button>
+        </div>
+    </div>
+</form>
+
+<div class="table-responsive mt-3 box-elementt">
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>Month</th>
+                <th>Activity Submitted</th>
+                <th>View</th>
+            </tr>
+        </thead>
+        <tbody class="table-bordered border-success">
+            {% for month in hierarchical_data %}
+            <tr id="month-{{ month.month }}">
+                <td class="text-start"  >{{ month.month_name }}</td>
+                <td>{{ month.total }}</td>
+                <td>
+                    <i class="bi bi-caret-down toggle-month"
+                       data-month="{{ month.month }}"
+                       style="cursor: pointer; font-size:1.2rem;"></i>
+                </td>
+            </tr>
+
+            <tr id="dept-row-{{ month.month }}" style="display: none;">
+                <td colspan="3">
+                    <table class="table table-sm table-bordered mb-0">
+                        <thead class="table-condensed">
+                            <tr>
+                                <th>Department</th>
+                                <th>Total Programs</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-success border-success">
+                            {% for dept in month.departments %}
+                                <tr>
+                                    <td  class="text-start">{{ dept.name }}</td>
+                                    <td>{{ dept.total }}</td>
+                                    <td>
+                                        <i class="bi bi-caret-down toggle-programs"
+                                           data-month="{{ month.month }}"
+                                           data-dept="{{ dept.id }}"
+                                           data-key="{{ month.month }}-{{ dept.id }}"
+                                           style="cursor: pointer; font-size:1.2rem;"></i>
+                                    </td>
+                                </tr>
+
+                                <tr id="programs-row-{{ month.month }}-{{ dept.id }}" style="display: none;">
+                                    <td colspan="3">
+                                        {% for activity in dept.activities %}
+                                        <div class="card mb-3 mx-auto" style="max-width: 100%;">
+                                            <div class="row g-0 box-element">
+                                                <div class="col-md-12">
+                                                    <div class="card-body text-center text-md-start">
+                                                        <div class="d-flex flex-column justify-content-center" style="text-align: justify; text-justify: inter-word;">
+                                                            <p class="mb-1"><strong>Date:</strong> {{ activity.date }}</p>
+                                                            <p class="mb-1"><strong>Program:</strong> {{ activity.program }}</p>
+                                                            <p class="mb-1"><strong>Type:</strong> {{ activity.typ }}</p>
+                                                            <p class="mb-1"><strong>Facilitator:</strong> {{ activity.facilitator|default:"None" }}</p>
+                                                            <p class="mb-1"><strong>Expense:</strong> {{ activity.expense|default:"0.00" }}</p>
+                                                            <p class="mb-1"><strong>Income:</strong> {{ activity.income|default:"0.00" }}</p>
+                                                            <p class="mb-1"><strong>Rating:</strong> {{ activity.rating|default:"-" }}</p>
+                                                           
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% empty %}
+                                            <div class="text-muted">No programs listed.</div>
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-muted">No departments found</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    document.addEventListener('click', function(event) {
+        // Toggle month to show departments
+        if (event.target.classList.contains('toggle-month')) {
+            const month = event.target.getAttribute('data-month');
+            const row = document.getElementById(`dept-row-${month}`);
+            row.style.display = row.style.display === 'none' ? '' : 'none';
+            event.target.classList.toggle('bi-caret-down');
+            event.target.classList.toggle('bi-caret-up');
+        }
+
+        // Toggle department to show programs
+        if (event.target.classList.contains('toggle-programs')) {
+            const key = event.target.getAttribute('data-key');
+            const row = document.getElementById(`programs-row-${key}`);
+            row.style.display = row.style.display === 'none' ? '' : 'none';
+            event.target.classList.toggle('bi-caret-down');
+            event.target.classList.toggle('bi-caret-up');
+        }
+    });
+</script>
+
+{% endblock %}

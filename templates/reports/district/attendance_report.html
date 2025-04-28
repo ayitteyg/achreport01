@@ -1,0 +1,39 @@
+{% load django_tables2 %}
+{% load custom_filters %}
+
+{% block content %}
+
+<form method="get" action="{% url 'attendance_report_dist' %}" hx-get="{% url 'attendance_report_dist' %}" hx-target="#content" hx-swap="innerHTML">
+    <div class="row g-2">
+        <div class="my-3  text-center">
+            <h6 class="btn btn-outline-primary mt-3 fs-medium"> <i class="bi bi-person-check"></i>  {{request.user.church}} </h6>
+        </div>
+    </div>
+</form>
+
+{% if monthly_data %}
+<div class="table-responsive mt-3 box-elementt">
+    <table class="table table-bordered table-light">
+        <thead class="table-light">
+            <tr>
+                <th class="text-start">Month</th>
+                <th>Avg Adults</th>
+                <th>Avg Youth</th>
+                <th>Avg Children</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for month in monthly_data %}
+                <tr>
+                    <td class="text-start">{{ month.month_name }}</td>
+                    <td>{{ month.avg_adults|floatformat:0 }}</td>
+                    <td>{{ month.avg_youth|floatformat:0 }}</td>
+                    <td>{{ month.avg_children|floatformat:0 }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% endblock %}

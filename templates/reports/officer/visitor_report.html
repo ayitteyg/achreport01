@@ -1,0 +1,44 @@
+{% comment %} {% extends 'root/base.html' %} {% endcomment %}
+{% load django_tables2 %}
+{% load custom_filters %}
+
+{% block content %}
+
+<form method="get" action="{% url 'visitor_report_of' %}" hx-get="{% url 'visitor_report_of' %}" hx-target="#content" hx-swap="innerHTML">
+    <div class="row">
+        <div class="my-3 py-1  text-center">
+            {{ filter.form.church }}
+            {{ filter.form.year }}
+            <button type="submit" class="btn btn-outline-primary bi bi-filter fs-medium">Filter</button>
+        </div>
+    </div>
+
+    <div class="table-responsive mt-3 box-element5">
+        <table class="table table-bordered text-center">
+            <thead class="table-light">
+                <tr>
+                    <th>Month</th>
+                    <th>Total Visitors</th>
+                    <th>Adventist</th>
+                    <th>Non-Adventist</th>
+                </tr>
+            </thead>
+            <tbody class="border-info">
+                {% for row in monthly_data %}
+                    <tr>
+                        <td>{{ row.month }}</td>
+                        <td>{{ row.total_visitors }}</td>
+                        <td>{{ row.total_adventist }}</td>
+                        <td>{{ row.total_non_adventist }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-muted">No data available for this filter</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</form>
+
+{% endblock %}

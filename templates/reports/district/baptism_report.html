@@ -1,0 +1,100 @@
+{% comment %} {% extends 'root/base.html' %} {% endcomment %}
+{% load django_tables2 %}
+{% load custom_filters %}
+
+
+{% block content %}
+
+<form method="get" action="{% url 'baptism_report_dist' %}" hx-get="{% url 'baptism_report_dist' %}" hx-target="#content" hx-swap="innerHTML">
+    <div class="row">
+        <div class="my-3 py-1 text-center">
+        
+        <h6 class="btn btn-outline-primary mt-3 fs-medium"> <i class="bi bi-droplet"></i>  {{request.user.church}} </h6>
+       
+        </div>
+    </div>
+
+    <div class="table-responsive mt-3 box-elementt">
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>Year</th>
+                    <th>Total Baptism</th>
+                    <th>Male</th>
+                    <th>Female</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody class="border-success" >
+                {% for year in yearly_data %}
+                    <tr id="{{year.year_}}">
+                        <td>{{ year.year_ }}</td>
+                        <td>{{ year.total_baptism }}</td>
+                        <td>{{ year.total_male }}</td>
+                        <td>{{ year.total_female }}</td>
+                        <td>
+                            <i class="bi bi-caret-down toggle-quarter" 
+                               data-year="{{ year.year_ }}"
+                               style="cursor: pointer;font-size:1.2rem"></i>
+                        </td>
+                    </tr>
+
+                    {# Quarterly data row - spans all columns #}
+                    <tr id="quarter-row-{{ year.year_ }}" style="display: none;">
+                        <td colspan="5">
+                            <div class="quarterly-table-container">
+                                <table class="table table-sm table-bordered mb-0">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Qtr</th>
+                                            <th>Total</th>
+                                            <th>Male</th>
+                                            <th>Female</th>
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody class="table-success border-secondary" >
+                                        {% for q in quarterly_data|get_item:year.year_ %}
+                                            <tr>
+                                                <td>{{ q.quarter }}</td>
+                                                <td>{{ q.total }}</td>
+                                                <td>{{ q.male }}</td>
+                                                <td>{{ q.female }}</td>
+                                               
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</form>
+
+<script>
+    document.addEventListener('click', function(event) {
+        if (event.target.classList.contains('toggle-quarter')) {
+            const btn = event.target;
+            const year = btn.getAttribute('data-year');
+            const row = document.getElementById(`quarter-row-${year}`);
+            
+            // Toggle visibility
+            if (row.style.display === 'none') {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+            
+            // Toggle icon
+            btn.classList.toggle('bi-caret-down');
+            btn.classList.toggle('bi-caret-up');
+            
+            event.stopPropagation();
+        }
+    });
+</script>
+
+{% endblock %}

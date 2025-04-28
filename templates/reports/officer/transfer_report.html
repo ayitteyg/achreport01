@@ -1,0 +1,99 @@
+{% comment %} {% extends 'root/base.html' %} {% endcomment %}
+{% load django_tables2 %}
+{% load custom_filters %}
+
+{% block content %}
+
+<form method="get" action="{% url 'transfer_report_of' %}" hx-get="{% url 'transfer_report_of' %}" hx-target="#content" hx-swap="innerHTML">
+    <div class="row g-2">
+
+        <div class="my-3 py-1 text-center">
+            {{ filter.form.church }}
+            {{ filter.form.status}}
+            <button type="submit" class="btn btn-outline-primary bi bi-filter fs-medium">Filter</button>
+        </div>
+        
+    </div>
+</form>
+
+<div class="table-responsive mt-3 box-element5">
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>Year</th>
+                <th>Total Transfers</th>
+                <th>Transfers In</th>
+                <th>Transfers Out</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody  class="table-bordered border-success">
+            {% for year in yearly_data %}
+                <tr id="{{year.year_}}">
+                    <td>{{ year.year_ }}</td>
+                    <td>{{ year.total_transfers }}</td>
+                    <td>{{ year.total_transfers_in }}</td>
+                    <td>{{ year.total_transfers_out }}</td>
+                    <td>
+                        <i class="bi bi-caret-down toggle-quarter" 
+                           data-year="{{ year.year_ }}"
+                           style="cursor: pointer;font-size:1.2rem"></i>
+                    </td>
+                </tr>
+
+                {# Quarterly data row - spans all columns #}
+                <tr id="quarter-row-{{ year.year_ }}" style="display: none;">
+                    <td colspan="5">
+                        <div class="quarterly-table-container">
+                            <table class="table table-sm table-bordered mb-0">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Qtr</th>
+                                        <th>Total</th>
+                                        <th>Transfers In</th>
+                                        <th>Transfers Out</th>
+                                    </tr>
+                                </thead>
+                                <tbody  class="table-success border-info">
+                                    {% for q in quarterly_data|get_item:year.year_ %}
+                                        <tr>
+                                            <td>{{ q.quarter }}</td>
+                                            <td>{{ q.total }}</td>
+                                            <td>{{ q.transfers_in }}</td>
+                                            <td>{{ q.transfers_out }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    document.addEventListener('click', function(event) {
+        if (event.target.classList.contains('toggle-quarter')) {
+            const btn = event.target;
+            const year = btn.getAttribute('data-year');
+            const row = document.getElementById(`quarter-row-${year}`);
+            
+            // Toggle visibility
+            if (row.style.display === 'none') {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+            
+            // Toggle icon
+            btn.classList.toggle('bi-caret-down');
+            btn.classList.toggle('bi-caret-up');
+            
+            event.stopPropagation();
+        }
+    });
+</script>
+
+{% endblock %}

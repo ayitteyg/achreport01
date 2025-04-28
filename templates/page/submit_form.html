@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+{% extends 'root/base.html' %}
+{% load crispy_forms_tags %}
+
+
+
+{% load static %}
+<html lang="en">
+
+
+
+
+<body class="">
+  {% block content %}
+
+ <!--header for navbar-->
+ <header>
+  {% include 'root/navbar.html' %}
+ </header>
+
+
+ <!--page sections-->
+
+
+  <section class="container my-1">
+    <center>
+      
+      <div id="report-menu-head">
+        <h4 class="text-infox">report submission form</h4>
+      </div>
+
+
+    </center>
+   
+
+    <div class="bread-crumb-div">
+      <ol class="breadcrumb text-center">
+        <li class="breadcrumb-item"><a class="fs-medium" href="{% url 'homepage' %}"><p class="bi-graph-up-arrow btn btn-primary">&nbsp View Reports</p></a></li>
+      </ol>
+    </div>
+      
+
+    <div class="container">
+
+        <div class="row">
+
+            {% for form in form_info %}
+            <div class="col-lg-3 col-md-2 py-3"  data-aos="zoom-in-up"  data-aos-duration="3000">
+                <div class="card">
+                <div class="card-headerx"><i  class="bi {{ form.icon }}"></i></div>
+                <div class="card-body bg-card">
+                    <h5 class="text-white fs-medium">{{ form.name }}</h5>
+                    <p class="card-text text-white py-3 form-text">{{ form.description}}</p>
+                    <a   data-bs-toggle="modal" data-bs-target="#{{form.form_key}}_report_modal" href="#" class="btn btn-primary form-text">submit</a>
+                </div>
+                </div>
+            </div>
+            {% endfor %}
+    </div>
+    </div>
+  </section>
+
+
+
+  
+  <!-- All form modal modals--> 
+
+  <!--activity form modal-->
+  <div class="modal fade" id="activity_report_modal" tabindex="-1" aria-labelledby="activity_report_modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title fs-5" id="activity_report_modalLabel">Activity Report</div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          {{ form.media }}
+          <div  class="">
+            <form method="post" id="activity-form-id">
+              {% csrf_token %}
+              {{ activity_form|crispy}}  <!-- Automatically applies Bootstrap styles -->
+              <button type="submit" class="submit-form-btn">Submit</button>
+             </form>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+  <!--Baptism modal form-->
+  <div class="modal fade" id="baptism_report_modal" tabindex="-1" aria-labelledby="baptism__report_modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title fs-5" id="baptism_report_modalLabel">Baptism Report</div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          {{ form.media }}
+          <div  class="">
+            <form method="post" id="baptism-form-id">
+              {% csrf_token %}
+              {{ baptism_form|crispy}}  <!-- Automatically applies Bootstrap styles -->
+              <button type="submit" class="submit-form-btn">Submit</button>
+             </form>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+
+
+
+    <!--transfer modal form-->
+  <div class="modal fade" id="transfer_report_modal" tabindex="-1" aria-labelledby="transfer__report_modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title fs-5" id="transfer_report_modalLabel">Transfer Report</div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          {{ form.media }}
+          <div  class="">
+            <form method="post" id="transfer-form-id">
+              {% csrf_token %}
+              {{ transfer_form|crispy}}  <!-- Automatically applies Bootstrap styles -->
+              <button type="submit" class="submit-form-btn">Submit</button>
+             </form>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+
+
+
+  
+    <!--attendance modal form-->
+    <div class="modal fade" id="attendance_report_modal" tabindex="-1" aria-labelledby="attendance__report_modalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <div class="modal-title fs-5" id="attendance_report_modalLabel">Service Attendance Report</div>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            {{ form.media }}
+            <div  class="">
+              <form method="post" id="attendance-form-id">
+                {% csrf_token %}
+                {{ attendance_form|crispy}}  <!-- Automatically applies Bootstrap styles -->
+                <button type="submit" class="submit-form-btn">Submit</button>
+               </form>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  
+
+
+
+    <!--visitors modal form-->
+    <div class="modal fade" id="visitor_report_modal" tabindex="-1" aria-labelledby="visitor__report_modalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <div class="modal-title fs-5" id="visitor_report_modalLabel">Service Visitors</div>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            {{ form.media }}
+            <div  class="">
+              <form method="post" id="visitor-form-id">
+                {% csrf_token %}
+                {{ visitor_form|crispy}}  <!-- Automatically applies Bootstrap styles -->
+                <button type="submit" class="submit-form-btn">Submit</button>
+               </form>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+    <!--dedications modal form-->
+    <div class="modal fade" id="dedication_report_modal" tabindex="-1" aria-labelledby="dedication__report_modalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <div class="modal-title fs-5" id="dedication_report_modalLabel">Baby Dedications</div>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            {{ form.media }}
+            <div  class="">
+              <form method="post" id="dedication-form-id">
+                {% csrf_token %}
+                {{ dedication_form|crispy}}  <!-- Automatically applies Bootstrap styles -->
+                <button type="submit" class="submit-form-btn">Submit</button>
+               </form>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  
+
+
+    <!--events modal form-->
+    <div class="modal fade" id="event_report_modal" tabindex="-1" aria-labelledby="event__report_modalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <div class="modal-title fs-5" id="event_report_modalLabel">Events & Ceremonies</div>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            {{ form.media }}
+            <div  class="">
+              <form method="post" id="event-form-id">
+                {% csrf_token %}
+                {{ event_form|crispy}}  <!-- Automatically applies Bootstrap styles -->
+                <button type="submit" class="submit-form-btn">Submit</button>
+               </form>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  
+
+
+
+  
+  <script>
+    $(document).ready(function() {
+        $('#id_department').select2({
+            width: '100%',
+            placeholder: "Start typing to search...",
+            allowClear: true
+        });
+    });
+    </script>
+
+{% endblock %}  
+</body>
+</html>
+

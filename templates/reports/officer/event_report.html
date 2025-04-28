@@ -1,0 +1,65 @@
+{% extends 'root/base.html' %}
+{% load custom_filters %}
+
+{% block content %}
+<form method="get" action="{% url 'event_report_of' %}" hx-get="{% url 'event_report_of' %}" hx-target="#content" hx-swap="innerHTML">
+    <div class="row">
+        <div class="my-3 py-1 text-center">
+            {{ filter.form.church }}
+            {{ filter.form.year }}
+            <button type="submit" class="btn btn-outline-primary bi bi-filter fs-medium">Filter</button>
+        </div>
+    </div>
+
+    <!-- Summary Table -->
+    <div class="table-responsive mt-3 box-element5">
+        <table class="table table-bordered text-start">
+            <thead class="table-light">
+                <tr>
+                    <th>Event Type</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody  class="border-info">
+                {% for row in summary_data %}
+                    <tr>
+                        <td>{{ row.event_type }}</td>
+                        <td>{{ row.total }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="2" class="text-muted">No summary data available.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Detail Table -->
+    <div class="table-responsive mt-4 box-element">
+        <table class="table table-bordered table-hover text-start">
+            <thead class="table-light">
+                <tr>
+                    <th>Date</th>
+                    <th>Event Type</th>
+                    <th>Member Involved</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in detail_data %}
+                    <tr>
+                        <td>{{ item.date }}</td>
+                        <td>{{ item.event_type }}</td>
+                        <td>{{ item.member_involved }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-muted">No detail data found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</form>
+{% endblock %}
+
