@@ -32,6 +32,7 @@ from .views import (
     submit_forms_page_view, 
     get_departments, 
     get_users,
+    PageInDevelopment,
     dashboard_charts_page_view, 
     plotly_dashboard_charts_page_view,
     base_report_page_view,
@@ -106,6 +107,11 @@ urlpatterns = [
      
       path("api/baptism-chart/", dashboard_charts_page_view, name="baptism_chart_data"),  
       path('plotly-dashboard/', plotly_dashboard_charts_page_view, name='plotly_dashboard'),
+      
+      
+      
+      
+      path('in-development/', PageInDevelopment.as_view(), name='in-dev'),
      
       
 ]

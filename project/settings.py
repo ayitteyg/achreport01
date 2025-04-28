@@ -32,6 +32,25 @@ env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 
+
+service_account_json_str = os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON")
+
+def read_json_from_render_env():
+    if service_account_json_str:
+        service_account_info = json.loads(service_account_json_str)  # Convert string to dict
+    else:
+        raise ValueError("GOOGLE_SERVICE_ACCOUNT_JSON is not set in the environment variables.")
+    # Store it as a dictionary
+    GOOGLE_SERVICE_ACCOUNT_JSON = service_account_info
+    print("GOOGLE_SERVICE_ACCOUNT_JSON Loaded Successfully")
+    return GOOGLE_SERVICE_ACCOUNT_JSON
+
+
+GOOGLE_SERVICE_ACCOUNT_JSON = service_account_json_str  # Store it as a dictionary
+
+# print("GOOGLE_SERVICE_ACCOUNT_JSON:", GOOGLE_SERVICE_ACCOUNT_JSON)
+
+
 # Retrieve the service account JSON file path
 GOOGLE_SERVICE_ACCOUNT_JSON = env("GOOGLE_SERVICE_ACCOUNT_JSON", default=None)
 

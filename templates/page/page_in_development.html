@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+{% extends 'root/base.html' %}
+{% load crispy_forms_tags %}
+
+{% load static %}
+
+<html lang="en">
+ 
+
+  <body class="">
+    {% block content %}
+
+    <!--header for navbar-->
+    <header>{% include 'root/navbar.html' %}</header>
+
+    <!--page sections-->
+    <section class="container my-5">
+      <!-- Breadcrumbs -->
+      <div class="bread-crumb-div">
+        <ol class="breadcrumb text-center">
+          <li class="breadcrumb-item"><a class="fs-medium" href="{% url 'homepage' %}"><p class="bi bi-arrow-return-left btn btn-primary">Homepage</p></a></li>
+        </ol>
+      </div>
+
+      <div class="row">
+     
+        <!-- Dynamic Content Area with Initial State -->
+        <div class="container mt-4 text-center">
+          <div id="content">
+            <!-- Default Content -->
+            <div class="card shadow-sms border-0">
+              
+              <div class="card-body py-4"  data-aos="zoom-in-up"  data-aos-duration="3000">
+                <!--  <h5 class="mt-3 text-muted fs-medium py-4">Department Report Dashboard</h5> -->
+                 <!-- <i class="bi bi-graph-up" style="font-size: 3rem; color: #6c757d;"></i> -->
+                
+                
+                <div class="text-center  no-report-div">
+                    <h5 class="mt-3 text-muted fs-medium py-4">Report Dashboard in development</h5>
+                    <img class=" no-report-img" src="{% static 'images/no-report.avif' %}" alt="" width=400px height=350px>
+                </div>
+                 
+             
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> 
+    </section>
+
+    {% endblock %}
+</body>
+
+
+</html>

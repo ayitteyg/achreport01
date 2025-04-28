@@ -12,3 +12,9 @@ class DepartmentAdmin(ImportExportModelAdmin):
 @admin.register(Pastor)
 class PastorAdmin(ImportExportModelAdmin):
    pass
+
+
+
+@admin.register(AppUser)
+class AppUserAdmin(ImportExportModelAdmin):
+   pass

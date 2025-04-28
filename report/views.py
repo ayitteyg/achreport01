@@ -188,7 +188,7 @@ class SubmitFormsView(generic.TemplateView):
 
                 model_class, filename = model_map[key]
                 data = list(model_class.objects.values())
-                upload_json_to_drive(filename, data)
+                #upload_json_to_drive(filename, data)
 
                 if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
                     return JsonResponse({"message": "Report submitted successfully!"})
@@ -350,6 +350,10 @@ class BaptismReportView(View):
 
 
 
+class PageInDevelopment(View):
+    def get(self, request):
+        context = {}
+        return render(request, 'page/page_in_development.html', context)
 
 
 
@@ -365,6 +369,8 @@ class TransferReportView(View):
     def get(self, request):
         context = {'report':'transfer reports'}
         return render(request, 'reports/transfer_report.html', context)
+    
+    
     
 
 
