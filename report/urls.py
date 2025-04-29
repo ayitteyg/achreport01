@@ -33,6 +33,7 @@ from .views import (
     get_departments, 
     get_users,
     PageInDevelopment,
+    login_failed_view,
     dashboard_charts_page_view, 
     plotly_dashboard_charts_page_view,
     base_report_page_view,
@@ -112,6 +113,7 @@ urlpatterns = [
       
       
       path('in-development/', PageInDevelopment.as_view(), name='in-dev'),
+      path('login-failed/', login_failed_view, name='login_failed'),
      
       
 ]

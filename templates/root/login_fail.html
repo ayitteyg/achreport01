@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+{% extends 'root/base.html' %}
+{% load crispy_forms_tags %}
+
+{% load static %}
+
+<html lang="en">
+ 
+
+  <body class="">
+    {% block content %}
+
+    <!--header for navbar-->
+    
+
+    <!--page sections-->
+    <section class="container my-5">
+      <!-- Breadcrumbs -->
+      
+    
+    
+
+      <div class="row">
+     
+        <!-- Dynamic Content Area with Initial State -->
+        <div class="container mt-4 text-center">
+          <div id="content">
+            <!-- Default Content -->
+            <div class="card shadow-sms border-0">
+              <h7 class="text-center py-1" >login failed; 
+                <h6 class="text-danger" >Wrong Credentials OR not Authorized</h6> </h7>
+              <div class="card-body py-0"  data-aos="zoom-in-up"  data-aos-duration="3000">
+                <img class=" no-report-img" src="{% static 'images/login-fail.avif' %}" alt="" width=380px height=400px>
+                <div class="text-center  no-report-div">
+                    <a class="text-center text-muted fs-medium" href="{% url 'login' %}"><p class="bi bi-arrow-return-left btn btn-danger">Retry</p></a>
+                    
+                </div>
+                 
+             
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> 
+    </section>
+
+    {% endblock %}
+</body>
+
+
+</html>

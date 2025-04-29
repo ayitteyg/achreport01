@@ -175,6 +175,7 @@ def excel_to_json(file_path, output_path=None):
         raise ValidationError(f"Error converting Excel to JSON: {str(e)}")
 
 
+
 def load_json_to_model(json_data, model, mapping=None, update_existing=False):
     """
     Load JSON data into Django model with proper type conversion:

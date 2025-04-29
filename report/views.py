@@ -49,16 +49,23 @@ User = get_user_model()
 
 
 
-
-class LoginView(LoginView):
+class CustomLoginView(LoginView):
     template_name = 'root/login.html'
     redirect_authenticated_user = True
         
     def get_success_url(self):
-        return reverse_lazy('homepage')  # Ensure 'homepage' is the correct URL name for HomepageView
-login_view = LoginView.as_view()
+        return reverse_lazy('homepage')  # Redirect to homepage on success
+
+    def form_invalid(self, form):
+        # Redirect to a different template when login fails
+        return redirect('login_failed')  # Make sure you have a URL named 'login_failed'
+
+login_view = CustomLoginView.as_view()
 
 
+
+def login_failed_view(request):
+    return render(request, 'root/login_fail.html')
 
 
 class HomepageView(TemplateView):
@@ -354,8 +361,6 @@ class PageInDevelopment(View):
     def get(self, request):
         context = {}
         return render(request, 'page/page_in_development.html', context)
-
-
 
 
 
