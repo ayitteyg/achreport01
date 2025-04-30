@@ -277,6 +277,7 @@ def load_bulk_department():
         "Interest Coordinator",
         "Community Service",
         "Project",
+        "admin"
     ]
 
     created_count = 0
@@ -387,6 +388,7 @@ def run_data():
     # load_bulk_visitors()
     # load_bulk_dedications()
     # load_bulk_activities()
-     load_bulk_department()
+    #load_bulk_department()
     # load_bulk_events()
     #create_test_users()
+    pass

@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User, AbstractUser
 from django.conf import settings
-
+from django.contrib.auth.models import BaseUserManager
 """ 
 
 CLEANING MODELS/RESETTING DATABASE
@@ -68,7 +68,8 @@ DEPARTMENT_CHOICES = (
     ('Interest Coordinator', 'Interest Coordinator'),
     ('Community Service', 'Community Service'),
     ('Project', 'Project'),
-    ('Congregation', 'Congregation')
+    ('Congregation', 'Congregation'),
+    ('admin', 'admin'),
 )
 
 
@@ -103,6 +104,37 @@ class Department(models.Model):
 #         return self.name
 
 
+
+class AppUserManager(BaseUserManager):
+    use_in_migrations = True
+
+    def _create_user(self, contact, password, **extra_fields):
+        if not contact:
+            raise ValueError('The Contact field must be set')
+        user = self.model(contact=contact, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_user(self, contact, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', False)
+        extra_fields.setdefault('is_superuser', False)
+        return self._create_user(contact, password, **extra_fields)
+
+    def create_superuser(self, contact, password, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_active', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        return self._create_user(contact, password, **extra_fields)
+
+
+
 class AppUser(AbstractUser):
     name = models.CharField(max_length=50, blank=True)
     church = models.CharField(max_length=25, choices=CHURCH)
@@ -117,6 +149,8 @@ class AppUser(AbstractUser):
     USERNAME_FIELD = 'contact'  # Use contact as the username
     REQUIRED_FIELDS = ['department']  # Required when creating superuser
     
+    objects = AppUserManager()  # Add this line
+    
     def save(self, *args, **kwargs):
         if not self.pk:  # Only for new users
             self.set_password(f"{self.contact}{self.department}")
@@ -124,6 +158,8 @@ class AppUser(AbstractUser):
     
     def __str__(self):
         return self.name
+    
+    
 
 
 

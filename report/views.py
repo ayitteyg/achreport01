@@ -37,11 +37,11 @@ User = get_user_model()
 #print_model_objects(Activity)
 
 # Get all usernames as a list
-#usernames = list(User.objects.values_list('username', flat=True))
+#usernames = list(User.objects.values_list('contact', flat=True))
 
 #print(usernames)
 
-#reset_model_data(Attendance)
+#reset_model_data(Department)
 # Reset all data in MyModel
 #convert_to_json(file='attendance')
 #load_json_model(file='attendance', model=Attendance)
