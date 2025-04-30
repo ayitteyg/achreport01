@@ -105,21 +105,44 @@ class Department(models.Model):
 
 
 
-class AppUserManager(BaseUserManager):
-    use_in_migrations = True
+# class AppUserManager(BaseUserManager):
+#     use_in_migrations = True
 
-    def _create_user(self, contact, password, **extra_fields):
+#     def _create_user(self, contact, password, **extra_fields):
+#         if not contact:
+#             raise ValueError('The Contact field must be set')
+#         user = self.model(contact=contact, **extra_fields)
+#         user.set_password(password)
+#         user.save(using=self._db)
+#         return user
+
+#     def create_user(self, contact, password=None, **extra_fields):
+#         extra_fields.setdefault('is_staff', False)
+#         extra_fields.setdefault('is_superuser', False)
+#         return self._create_user(contact, password, **extra_fields)
+
+#     def create_superuser(self, contact, password, **extra_fields):
+#         extra_fields.setdefault('is_staff', True)
+#         extra_fields.setdefault('is_superuser', True)
+#         extra_fields.setdefault('is_active', True)
+
+#         if extra_fields.get('is_staff') is not True:
+#             raise ValueError('Superuser must have is_staff=True.')
+#         if extra_fields.get('is_superuser') is not True:
+#             raise ValueError('Superuser must have is_superuser=True.')
+
+#         return self._create_user(contact, password, **extra_fields)
+
+
+
+class AppUserManager(BaseUserManager):
+    def create_user(self, contact, password=None, **extra_fields):
         if not contact:
             raise ValueError('The Contact field must be set')
         user = self.model(contact=contact, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
-
-    def create_user(self, contact, password=None, **extra_fields):
-        extra_fields.setdefault('is_staff', False)
-        extra_fields.setdefault('is_superuser', False)
-        return self._create_user(contact, password, **extra_fields)
 
     def create_superuser(self, contact, password, **extra_fields):
         extra_fields.setdefault('is_staff', True)
@@ -131,36 +154,59 @@ class AppUserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
 
-        return self._create_user(contact, password, **extra_fields)
+        return self.create_user(contact, password, **extra_fields)
 
 
 
+# class AppUser(AbstractUser):
+#     name = models.CharField(max_length=50, blank=True)
+#     church = models.CharField(max_length=25, choices=CHURCH)
+#     department = models.CharField(max_length=50, choices=DEPARTMENT_CHOICES)
+#     contact = models.CharField(max_length=10, blank=True, unique=True)  # Make contact unique
+    
+#     # Role flags
+#     is_local = models.BooleanField(default=False)
+#     is_district = models.BooleanField(default=False)
+#     is_officer = models.BooleanField(default=False)
+    
+#     USERNAME_FIELD = 'contact'  # Use contact as the username
+#     REQUIRED_FIELDS = ['department']  # Required when creating superuser
+    
+#     objects = AppUserManager()  # Add this line
+    
+#     def save(self, *args, **kwargs):
+#         if not self.pk:  # Only for new users
+#             self.set_password(f"{self.contact}{self.department}")
+#         super().save(*args, **kwargs)
+    
+#     def __str__(self):
+#         return self.name
+    
+    
 class AppUser(AbstractUser):
+    # Remove username from fields
+    username = None
+    
+    # Your existing fields
     name = models.CharField(max_length=50, blank=True)
     church = models.CharField(max_length=25, choices=CHURCH)
     department = models.CharField(max_length=50, choices=DEPARTMENT_CHOICES)
-    contact = models.CharField(max_length=10, blank=True, unique=True)  # Make contact unique
+    contact = models.CharField(max_length=10, unique=True)  # Make sure this is unique
     
     # Role flags
     is_local = models.BooleanField(default=False)
     is_district = models.BooleanField(default=False)
     is_officer = models.BooleanField(default=False)
     
-    USERNAME_FIELD = 'contact'  # Use contact as the username
-    REQUIRED_FIELDS = ['department']  # Required when creating superuser
+    USERNAME_FIELD = 'contact'
+    REQUIRED_FIELDS = ['department']  # Fields required when creating superuser
     
-    objects = AppUserManager()  # Add this line
-    
+    # Remove the auto-password generation if you want manual control
     def save(self, *args, **kwargs):
-        if not self.pk:  # Only for new users
-            self.set_password(f"{self.contact}{self.department}")
         super().save(*args, **kwargs)
     
     def __str__(self):
         return self.name
-    
-    
-
 
 
 
