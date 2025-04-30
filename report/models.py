@@ -134,15 +134,28 @@ class Department(models.Model):
 #         return self._create_user(contact, password, **extra_fields)
 
 
-
 class AppUserManager(BaseUserManager):
-    def create_user(self, contact, password=None, **extra_fields):
+    use_in_migrations = True  # Add this for proper migration support
+
+    def _create_user(self, contact, password, **extra_fields):
+        """
+        Creates and saves a User with the given contact and password.
+        """
         if not contact:
             raise ValueError('The Contact field must be set')
+        
+        # Normalize contact if needed (e.g., remove spaces, special characters)
+        contact = self.normalize_contact(contact)
+        
         user = self.model(contact=contact, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
+
+    def create_user(self, contact, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', False)
+        extra_fields.setdefault('is_superuser', False)
+        return self._create_user(contact, password, **extra_fields)
 
     def create_superuser(self, contact, password, **extra_fields):
         extra_fields.setdefault('is_staff', True)
@@ -154,7 +167,15 @@ class AppUserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
 
-        return self.create_user(contact, password, **extra_fields)
+        return self._create_user(contact, password, **extra_fields)
+
+    def normalize_contact(self, contact):
+        """
+        Normalize the contact by removing any unwanted characters.
+        """
+        # Example: Remove all non-digit characters
+        import re
+        return re.sub(r'[^\d]', '', contact)
 
 
 

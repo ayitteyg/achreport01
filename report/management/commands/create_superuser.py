@@ -3,25 +3,31 @@ from django.contrib.auth import get_user_model
 import os
 
 
-
 class Command(BaseCommand):
     help = 'Create a superuser with custom fields'
 
     def handle(self, *args, **options):
         User = get_user_model()
         
-        contact = '0549053295'  # or input('Contact: ')
-        department = 'admin'     # or input('Department: ')
-        name = 'developer'      # or input('Name: ')
-        church = 'Achimota'            # or input('Church: ')
+        contact = '0549053295'
+        department = 'admin'
+        name = 'developer'
+        church = 'Achimota'
+        password = 'my-mtn-0549'
         
         try:
             user = User.objects.create_superuser(
-                contact=contact,
+                contact=contact,  # This matches USERNAME_FIELD
+                password=password,  # Password must come right after USERNAME_FIELD
+                # Additional required fields:
                 department=department,
+                # Optional fields:
                 name=name,
                 church=church,
-                password='my-mtn-0549'  # Set a secure password
+                # Ensure superuser flags are set (they should be set automatically by your manager)
+                is_staff=True,
+                is_superuser=True,
+                is_active=True
             )
             self.stdout.write(self.style.SUCCESS(f'Successfully created superuser: {user}'))
         except Exception as e:
