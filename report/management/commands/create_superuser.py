@@ -3,32 +3,35 @@ from django.contrib.auth import get_user_model
 import os
 
 
+
 class Command(BaseCommand):
     help = 'Create a superuser with custom fields'
+
+    def add_arguments(self, parser):
+        parser.add_argument('--contact', default='0549053295', help='User contact number')
+        parser.add_argument('--password', default='my-mtn-0549', help='User password')
+        parser.add_argument('--department', default='admin', help='Department')
+        parser.add_argument('--name', default='developer', help='Full name')
+        parser.add_argument('--church', default='Achimota', help='Church')
 
     def handle(self, *args, **options):
         User = get_user_model()
         
-        contact = '0549053295'
-        department = 'admin'
-        name = 'developer'
-        church = 'Achimota'
-        password = 'my-mtn-0549'
-        
         try:
+            # Create superuser with only required fields first
             user = User.objects.create_superuser(
-                contact=contact,  # This matches USERNAME_FIELD
-                password=password,  # Password must come right after USERNAME_FIELD
-                # Additional required fields:
-                department=department,
-                # Optional fields:
-                name=name,
-                church=church,
-                # Ensure superuser flags are set (they should be set automatically by your manager)
-                is_staff=True,
-                is_superuser=True,
-                is_active=True
+                contact=options['contact'],
+                password=options['password'],
+                department=options['department']
             )
-            self.stdout.write(self.style.SUCCESS(f'Successfully created superuser: {user}'))
+            
+            # Update additional fields
+            user.name = options['name']
+            user.church = options['church']
+            user.save()
+            
+            self.stdout.write(self.style.SUCCESS(
+                f'Successfully created superuser: {user.contact}'
+            ))
         except Exception as e:
             self.stdout.write(self.style.ERROR(f'Error: {str(e)}'))
