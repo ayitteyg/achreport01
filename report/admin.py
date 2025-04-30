@@ -27,18 +27,24 @@ class AppUserAdminForm(forms.ModelForm):
         # Bypass all password validation
         return self.cleaned_data
 
+
 class AppUserAdmin(UserAdmin):
     form = AppUserAdminForm
     add_form = AppUserAdminForm
     
-    # Remove password fields from add/change forms
-    add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ( 'church', 'department', 'contact',  'name', 'is_local', 'is_district', 'is_officer', 'is_active', 'is_staff'),
-        }),
-    )
+    # Fix: Add proper ordering using an existing field (contact)
+    ordering = ('contact',)  # Changed from username to contact
     
+    # Fix: Define list_display to show important fields
+    list_display = ('contact', 'name', 'church', 'department', 'is_staff', 'is_active')
+    
+    # Add list_filter if needed
+    list_filter = ('is_staff', 'is_active', 'church', 'department')
+    
+    # Add search_fields for better search functionality
+    search_fields = ('contact', 'name', 'church')
+    
+    # Your existing fieldsets
     fieldsets = (
         (None, {'fields': ('contact', 'department', 'password')}),
         ('Personal info', {'fields': ('name', 'church')}),
@@ -46,6 +52,16 @@ class AppUserAdmin(UserAdmin):
             'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
         }),
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
+    )
+    
+    # Your existing add_fieldsets
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('church', 'department', 'contact', 'name', 
+                      'is_local', 'is_district', 'is_officer', 
+                      'is_active', 'is_staff'),
+        }),
     )
     
     def save_model(self, request, obj, form, change):
