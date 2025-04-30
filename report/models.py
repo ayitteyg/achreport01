@@ -9,7 +9,7 @@ CLEANING MODELS/RESETTING DATABASE
 .rm -rf db.sqlite3 #this delete the database
 .python manage.py makemigrations 
 .python manage.py migrate
-.python manage.py create
+.python manage.py createsupersuer
 
 """
 
@@ -60,11 +60,7 @@ DEPARTMENT_CHOICES = (
     ('Adventist Men Ministry', 'Adventist Men Ministry'),
     ('Womens Ministry', 'Womens Ministry'),
     ('Audit', 'Audit'),
-    ('Adventurer', 'Adventurer'),
-    ('Young Adult', 'Young Adult'),
-    ('Public Campus Ministry', 'Public Campus Ministry'),
-    ('Ambassador', 'Ambassador'),
-    ('Pathfinder', 'Pathfinder'),
+    ('Youth', 'Youth'),
     ('Family Ministry', 'Family Ministry'),
     ('Education', 'Education'),
     ('Welfare', 'Welfare'),
@@ -90,29 +86,44 @@ class Department(models.Model):
         return self.name
 
 
+# class AppUser(AbstractUser):
+#     name = models.CharField(max_length=50, blank=True)
+#     church = models.CharField(max_length=25, choices=CHURCH)
+#     department = models.CharField(max_length=50, choices=DEPARTMENT_CHOICES)
+#     contact = models.CharField(max_length=10, blank=True)
+    
+#     # Role flags
+#     is_local = models.BooleanField(default=False)
+#     is_district = models.BooleanField(default=False)
+#     is_officer = models.BooleanField(default=False)
+    
+#     # Add any additional fields here
+    
+#     def __str__(self):
+#         return self.name
+
+
 class AppUser(AbstractUser):
     name = models.CharField(max_length=50, blank=True)
     church = models.CharField(max_length=25, choices=CHURCH)
     department = models.CharField(max_length=50, choices=DEPARTMENT_CHOICES)
-    contact = models.CharField(max_length=10, blank=True)
+    contact = models.CharField(max_length=10, blank=True, unique=True)  # Make contact unique
     
     # Role flags
     is_local = models.BooleanField(default=False)
     is_district = models.BooleanField(default=False)
     is_officer = models.BooleanField(default=False)
     
-    # Add any additional fields here
+    USERNAME_FIELD = 'contact'  # Use contact as the username
+    REQUIRED_FIELDS = ['department']  # Required when creating superuser
+    
+    def save(self, *args, **kwargs):
+        if not self.pk:  # Only for new users
+            self.set_password(f"{self.contact}{self.department}")
+        super().save(*args, **kwargs)
     
     def __str__(self):
         return self.name
-
-
-
-
-
-
-
-
 
 
 

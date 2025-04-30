@@ -35,14 +35,14 @@
       <form action="{% url 'login' %}" method="POST">
         {% csrf_token %}
         <div class="form-group">
-          <label style="color:black" for="username">Username</label>
+          <label style="color:black" for="username">Department</label>
           <input type="text" id="username" name="username" list="username-suggestions" autocomplete="off" required>
           <datalist id="username-suggestions">
             <!-- Options will be populated by JavaScript -->
           </datalist>
         </div>
         <div class="form-group">
-            <label for="password" style="color: rgb(35, 50, 61)">Password</label>
+            <label for="password" style="color: rgb(35, 50, 61)">Contact</label>
             <input type="password" id="password" name="password" required>
         </div>
         <button type="submit" class="login-btn">Login</button>
@@ -60,7 +60,7 @@
         
         if (query.length >= 2) { // Only search after 2 characters
           try {
-            const response = await fetch(`/get_users/?q=${encodeURIComponent(query)}`);
+            const response = await fetch(`/api/departments/?q=${encodeURIComponent(query)}`);
             const usernames = await response.json();
             
             // Clear previous options

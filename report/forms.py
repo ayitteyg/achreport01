@@ -131,3 +131,22 @@ class EventForm(forms.ModelForm):
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date'}),
         }
+
+
+
+# forms.py
+from django.contrib.auth.forms import AuthenticationForm
+
+class PasswordlessAuthForm(forms.Form):
+    department = forms.CharField()
+    contact = forms.CharField()
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        department = cleaned_data.get('department')
+        contact = cleaned_data.get('contact')
+        
+        if department and contact:
+            # No password needed - we'll generate it automatically
+            return cleaned_data
+        raise forms.ValidationError("Both department and contact are required")

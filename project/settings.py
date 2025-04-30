@@ -191,6 +191,13 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+AUTHENTICATION_BACKENDS = [
+    'report.auth_backends.PasswordlessAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',  # Fallback
+]
+
+
+
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',

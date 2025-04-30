@@ -48,19 +48,74 @@ User = get_user_model()
 
 
 
-
-class CustomLoginView(LoginView):
+class CustomLoginView(View):
     template_name = 'root/login.html'
     redirect_authenticated_user = True
+    
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated and self.redirect_authenticated_user:
+            return redirect(self.get_success_url())
+        return render(request, self.template_name)
+    
+    
+    def post(self, request, *args, **kwargs):
+        department = request.POST.get('username')
+        contact = request.POST.get('password')
         
+        print(department)
+        print(contact)
+        
+        if not department or not contact:
+            return redirect('login_failed')
+        
+        user = PasswordlessAuthBackend().authenticate(
+            request,
+            department=department,
+            contact=contact
+        )
+        
+        if user is not None:
+            login(request, user, backend='report.auth_backends.PasswordlessAuthBackend')
+            return redirect(self.get_success_url())
+        
+        return redirect('login_failed')
+    
     def get_success_url(self):
-        return reverse_lazy('homepage')  # Redirect to homepage on success
-
-    def form_invalid(self, form):
-        # Redirect to a different template when login fails
-        return redirect('login_failed')  # Make sure you have a URL named 'login_failed'
-
+        return reverse_lazy('homepage')
 login_view = CustomLoginView.as_view()
+
+
+
+from .forms import PasswordlessAuthForm
+from .auth_backends import PasswordlessAuthBackend
+class CustomLoginView(FormView):
+    template_name = 'root/login.html'
+    form_class = PasswordlessAuthForm
+    redirect_authenticated_user = True
+    
+    def get_success_url(self):
+        return reverse_lazy('homepage')
+    
+    def form_valid(self, form):
+        department = form.cleaned_data['department']
+        contact = form.cleaned_data['contact']
+        
+        print(department)
+        print(contact)
+        
+        # Authenticate using our custom backend
+        user = PasswordlessAuthBackend().authenticate(
+            self.request,
+            department=department,
+            contact=contact
+        )
+        
+        if user is not None:
+            login(self.request, user)
+            return super().form_valid(form)
+        return redirect('login_failed')
+login_view2 = CustomLoginView.as_view()
+
 
 
 

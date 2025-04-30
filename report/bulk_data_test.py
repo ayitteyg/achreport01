@@ -254,9 +254,8 @@ def load_bulk_dedications(num_records=50):
 def load_bulk_department():
     department_names = [
         "Treasury",
-        "Secretary",
-        "Head Deacon",
-        "Head Deaconess",
+        "Secretariat",
+        "Deaconry",
         "Sabbath School",
         "Religious Libert/Vop",
         "Health",
@@ -266,20 +265,15 @@ def load_bulk_department():
         "Communication",
         "Children Ministry",
         "Publishing Ministry",
-        "Music Director",
+        "Music",
         "Advetntist Men Ministry",
         "Womens Ministry",
         "Audit",
-        "Adventurer",
-        "Young Adult",
-        "Public Campus Ministry",
-        "Ambassador",
-        "Pathfinder",
+        "Youth",
         "Family Ministry",
         "Education",
         "Welfare",
-        "Personal Ministry Sec",
-        "Pa System",
+        "PA System",
         "Interest Coordinator",
         "Community Service",
         "Project",
@@ -393,6 +387,6 @@ def run_data():
     # load_bulk_visitors()
     # load_bulk_dedications()
     # load_bulk_activities()
-    # load_bulk_department()
+     load_bulk_department()
     # load_bulk_events()
-    create_test_users()
+    #create_test_users()
