@@ -19,7 +19,7 @@ class Command(BaseCommand):
         
         try:
             # Create superuser with only required fields first
-            user = User.objects.create_superuser(
+            user = User.objects.create_superuser_custom(
                 contact=options['contact'],
                 password=options['password'],
                 department=options['department']
