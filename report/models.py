@@ -223,6 +223,8 @@ class AppUser(AbstractUser):
     REQUIRED_FIELDS = ['department']  # Fields required when creating superuser
     
     # Remove the auto-password generation if you want manual control
+    
+    objects = AppUserManager()
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
     
