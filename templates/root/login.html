@@ -13,8 +13,8 @@
   <body style="height:100vh">
     {% block content %}
 
-    <section>
-      <div class="custom-shape-divider-bottom-1743184445">
+        <!--  <section>
+    <div class="custom-shape-divider-bottom-1743184445">
         <svg
           data-name="Layer 1"
           xmlns="http://www.w3.org/2000/svg"
@@ -27,13 +27,26 @@
           ></path>
         </svg>
       </div>
-    </section>
+    </section> -->
 
     <div class="login-container">
       <img src="{% static 'images/sda.png' %}" alt="Logo" class="login-logo" />
       <h5 class="text-infox">ach.reports.01</h5>
       <form action="{% url 'login' %}" method="POST">
         {% csrf_token %}
+
+        <div class="form-group">
+          <label  style="color:black" for="church">Church:</label>
+          <select  style="width:100%; height:45px" name="church" id="church">
+              <option  value=""></option>
+              <option  value="Achimota">Achimota</option>
+              <option value="Prince of Peace">Prince of Peace</option>
+              <option value="King of Glory">King of Glory</option>
+              <option value="Nii Boi Town">Nii Boi Town</option>
+              <option value="Israel">Israel</option>
+          </select>
+        </div>
+
         <div class="form-group">
           <label style="color:black" for="username">Department</label>
           <input type="text" id="username" name="username" list="username-suggestions" autocomplete="off" required>
@@ -46,8 +59,11 @@
             <input type="password" id="password" name="password" required>
         </div>
         <button type="submit" class="login-btn">Login</button>
-     </form>
-      <a href="#" class="forgot-password text-info">Forgot Password?</a>
+     </form> <br>
+     <a href="tel:0549053295" class="text-decoration-none">
+      <i class="bi bi-telephone me-2 text-danger"></i>
+      <span class="text-muted fs-medium">0549053295</span>
+    </a>
     </div>
 
 

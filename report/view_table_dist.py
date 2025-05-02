@@ -1,5 +1,5 @@
-from django.db.models import Count, Q, Func, Avg
-from django.db.models.functions import ExtractMonth, ExtractYear, ExtractWeek
+from django.db.models import Count, Q, Func, Avg, Min, Sum
+from django.db.models.functions import ExtractMonth, ExtractYear, ExtractWeek, TruncWeek
 from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
 from .models import Activity, Visitor, Baptism, Transfer, Attendance, Dedication, Event
@@ -10,6 +10,7 @@ from .filters import ActivityFilter, VisitorFilter, BaptismFilter, TransferFilte
 import calendar
 from collections import defaultdict
 from django.db.models import Case, When, IntegerField
+from datetime import datetime
 
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -137,9 +138,91 @@ class TransferSummaryView_dist(SingleTableMixin, FilterView):
         return context
     
 
-
-
 class AttendanceSummaryView_dist(SingleTableMixin, FilterView):
+    table_class = AttendanceSummaryTable
+    template_name = "reports/district/attendance_report.html"
+    filterset_class = AttendanceFilter
+    model = Attendance
+
+    def get_queryset(self):
+        church = self.request.user.church
+        queryset = super().get_queryset().filter(church=church).annotate(
+            month=ExtractMonth('date'),
+            year=ExtractYear('date')
+        )
+        self.filter = self.filterset_class(self.request.GET, queryset=queryset)
+        return self.filter.qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        filtered_qs = self.get_queryset()
+
+        # Monthly Totals
+        monthly_totals = (
+            filtered_qs
+            .values('year', 'month')
+            .annotate(
+                avg_adults=Func(Avg('adult'), function='CEIL'),
+                avg_youth=Func(Avg('youth'), function='CEIL'),
+                avg_children=Func(Avg('children'), function='CEIL'),
+                first_date=Min('date')
+            )
+            .order_by('year', 'month')
+        )
+
+        # Service-wise Monthly Averages
+        service_avgs = (
+            filtered_qs
+            .values('year', 'month', 'service')
+            .annotate(
+                service_avg_adults=Func(Avg('adult'), function='CEIL'),
+                service_avg_youth=Func(Avg('youth'), function='CEIL'),
+                service_avg_children=Func(Avg('children'), function='CEIL'),
+                first_date=Min('date')
+            )
+            .order_by('year', 'month', 'service')
+        )
+
+        # Organize data by month
+        organized_data = []
+        for month in monthly_totals:
+            month_entry = {
+                'year': month['year'],
+                'month': month['month'],
+                'month_name': month['first_date'].strftime('%B %Y'),
+                'month_year': f"{month['month']}-{month['year']}",
+                'totals': {
+                    'adults': month['avg_adults'],
+                    'youth': month['avg_youth'],
+                    'children': month['avg_children']
+                },
+                'services': []
+            }
+            
+            # Add service averages for this month
+            for service in service_avgs:
+                if (service['year'] == month['year'] and 
+                    service['month'] == month['month']):
+                    month_entry['services'].append({
+                        'name': service['service'],
+                        'adults': service['service_avg_adults'],
+                        'youth': service['service_avg_youth'],
+                        'children': service['service_avg_children']
+                    })
+            
+            organized_data.append(month_entry)  # Moved this line to the end
+
+        context.update({
+            'attendance_data': organized_data,
+            'current_month': int(self.request.GET.get('month', datetime.now().month)),
+            'current_year': int(self.request.GET.get('year', datetime.now().year))
+        })
+        
+        #print(organized_data    )
+        return context
+
+
+class AttendanceSummaryView_dist2(SingleTableMixin, FilterView):
     table_class = AttendanceSummaryTable
     template_name = "reports/district/attendance_report.html"
     filterset_class = AttendanceFilter
@@ -194,6 +277,10 @@ class AttendanceSummaryView_dist(SingleTableMixin, FilterView):
 
         context['monthly_data'] = monthly_data
         context['weekly_data'] = dict(weekly_data)  # Convert to normal dict
+        
+        print(monthly_data)
+        print(weekly_data)
+        
         return context
 
 
@@ -498,7 +585,7 @@ class ActivitySummaryView_dist(SingleTableMixin, FilterView):
                     qs.filter(date__month=month, department=dept["department"])
                     .values(
                         "id", "date", "program", "typ", "facilitator",
-                        "expense", "income", "rating", "remarks"
+                        "expense", "income", "rating"
                     )
                     .order_by("date")
                 )

@@ -1,39 +1,97 @@
+{% comment %} {% extends 'root/base.html' %} {% endcomment %}
 {% load django_tables2 %}
 {% load custom_filters %}
 
 {% block content %}
 
 <form method="get" action="{% url 'attendance_report_dist' %}" hx-get="{% url 'attendance_report_dist' %}" hx-target="#content" hx-swap="innerHTML">
-    <div class="row g-2">
-        <div class="my-3  text-center">
-            <h6 class="btn btn-outline-primary mt-3 fs-medium"> <i class="bi bi-person-check"></i>  {{request.user.church}} </h6>
+    <div class="row">
+        <div class="my-3 py-1 text-center">
+            <h6 class="btn btn-outline-primary mt-3 fs-medium">
+                <i class="bi bi-people-fill"></i> {{ request.user.church }} Attendance Report
+            </h6>
         </div>
+    </div>
+
+    <div class="table-responsive mt-3 box-elementt">
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>Month</th>
+                    <th>Avg Adults</th>
+                    <th>Avg Youth</th>
+                    <th>Avg Children</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody class="border-success">
+                {% for month in attendance_data %}
+                    <tr id="{{ month.month_year }}">
+                        <td>{{ month.month_name }}</td>
+                        <td>{{ month.totals.adults|floatformat:"0" }}</td>
+                        <td>{{ month.totals.youth|floatformat:"0" }}</td>
+                        <td>{{ month.totals.children|floatformat:"0" }}</td>
+                        <td>
+                            <i class="bi bi-caret-down toggle-services" 
+                               data-month="{{ month.month_year }}"
+                               style="cursor: pointer; font-size: 1.2rem"></i>
+                        </td>
+                    </tr>
+
+                    {# Services breakdown row - spans all columns #}
+                    <tr id="services-row-{{ month.month_year }}" style="display: none;">
+                        <td colspan="5">
+                            <div class="services-table-container">
+                                <table class="table table-sm table-bordered mb-0">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Service</th>
+                                            <th>Avg Adults</th>
+                                            <th>Avg Youth</th>
+                                            <th>Avg Children</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="table-success border-secondary">
+                                        {% for service in month.services %}
+                                            <tr>
+                                                <td>{{ service.name }}</td>
+                                                <td>{{ service.adults|floatformat:"0" }}</td>
+                                                <td>{{ service.youth|floatformat:"0" }}</td>
+                                                <td>{{ service.children|floatformat:"0" }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </form>
 
-{% if monthly_data %}
-<div class="table-responsive mt-3 box-elementt">
-    <table class="table table-bordered table-light">
-        <thead class="table-light">
-            <tr>
-                <th class="text-start">Month</th>
-                <th>Avg Adults</th>
-                <th>Avg Youth</th>
-                <th>Avg Children</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for month in monthly_data %}
-                <tr>
-                    <td class="text-start">{{ month.month_name }}</td>
-                    <td>{{ month.avg_adults|floatformat:0 }}</td>
-                    <td>{{ month.avg_youth|floatformat:0 }}</td>
-                    <td>{{ month.avg_children|floatformat:0 }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-{% endif %}
+<script>
+    document.addEventListener('click', function(event) {
+        if (event.target.classList.contains('toggle-services')) {
+            const btn = event.target;
+            const monthYear = btn.getAttribute('data-month');
+            const row = document.getElementById(`services-row-${monthYear}`);
+            
+            // Toggle visibility
+            if (row.style.display === 'none') {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+            
+            // Toggle icon
+            btn.classList.toggle('bi-caret-down');
+            btn.classList.toggle('bi-caret-up');
+            
+            event.stopPropagation();
+        }
+    });
+</script>
 
 {% endblock %}

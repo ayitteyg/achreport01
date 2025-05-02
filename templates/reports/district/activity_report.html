@@ -57,13 +57,13 @@
                                     <td>
                                         <i class="bi bi-caret-down toggle-programs"
                                            data-month="{{ month.month }}"
-                                           data-dept="{{ dept.id }}"
-                                           data-key="{{ month.month }}-{{ dept.id }}"
+                                           data-dept="{{ dept.name }}"
+                                           data-key="{{ month.month }}-{{ dept.name }}"
                                            style="cursor: pointer; font-size:1.2rem;"></i>
                                     </td>
                                 </tr>
 
-                                <tr id="programs-row-{{ month.month }}-{{ dept.id }}" style="display: none;">
+                                <tr id="programs-row-{{ month.month }}-{{ dept.name }}" style="display: none;">
                                     <td colspan="3">
                                         {% for activity in dept.activities %}
                                         <div class="card mb-3 mx-auto" style="max-width: 100%;">

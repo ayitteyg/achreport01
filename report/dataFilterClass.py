@@ -615,7 +615,7 @@ class ReportDataExporterDist:
 
 
 
-    def export_to_excel(self, fields, filename="report_data.xlsx"):
+    def export_to_excel(self, fields, filename=f"report_data_{datetime.now()}.xlsx"):
         """Exports filtered data to Excel."""
         if not self.queryset:
             raise ValueError("No data filtered. Call filter_data() first.")
@@ -638,7 +638,7 @@ class ReportDataExporterDist:
     
     
     
-    def export_to_pdf(self, fields, filename="report_data.pdf", report_info=None):
+    def export_to_pdf(self, fields, filename=f"report_data_{datetime.now()}.pdf", report_info=None):
         if self.queryset is None:
             raise ValueError("No data filtered. Call filter_data() first.")
 

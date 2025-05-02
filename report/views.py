@@ -41,10 +41,11 @@ User = get_user_model()
 
 #print(usernames)
 
-#reset_model_data(Department)
+#reset_model_data(Attendance)
 # Reset all data in MyModel
 #convert_to_json(file='attendance')
 #load_json_model(file='attendance', model=Attendance)
+
 
 
 
