@@ -7,27 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Achimota.sda.reports</title>
     
+
+    
     <!-- Make sure these are included before your custom JS -->
   </head>
 
   <body style="height:100vh">
     {% block content %}
-
-        <!--  <section>
-    <div class="custom-shape-divider-bottom-1743184445">
-        <svg
-          data-name="Layer 1"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 1200 120"
-          preserveAspectRatio="none"
-        >
-          <path
-            d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z"
-            class="shape-fill"
-          ></path>
-        </svg>
-      </div>
-    </section> -->
 
     <div class="login-container">
       <img src="{% static 'images/sda.png' %}" alt="Logo" class="login-logo" />
@@ -35,37 +21,84 @@
       <form action="{% url 'login' %}" method="POST">
         {% csrf_token %}
 
-        <div class="form-group">
-          <label  style="color:black" for="church">Church:</label>
-          <select  style="width:100%; height:45px" name="church" id="church">
-              <option  value=""></option>
-              <option  value="Achimota">Achimota</option>
-              <option value="Prince of Peace">Prince of Peace</option>
-              <option value="King of Glory">King of Glory</option>
-              <option value="Nii Boi Town">Nii Boi Town</option>
-              <option value="Israel">Israel</option>
-          </select>
-        </div>
 
-        <div class="form-group">
-          <label style="color:black" for="username">Department</label>
-          <input type="text" id="username" name="username" list="username-suggestions" autocomplete="off" required>
+
+        <div class="form-group mb-3">
+          <div class="input-group">
+              <span class="input-group-text bg-light ">
+                <i class="bi bi-person text-primary"></i>
+              </span>
+              <select class="form-control form-control-lg text-muted" name="church" id="church" style="height: 45px;">
+                  <option value="">Church</option>
+                  <option value="Achimota">Achimota</option>
+                  <option value="Prince of Peace">Prince of Peace</option>
+                  <option value="King of Glory">King of Glory</option>
+                  <option value="Nii Boi Town">Nii Boi Town</option>
+                  <option value="Israel">Israel</option>
+              </select>
+              
+          </div>
+      </div>
+      
+      {% comment %} <div class="form-group mb-3">
+          <div class="input-group">
+              <span class="input-group-text bg-light">
+                <i class="bi bi-search text-primary"></i>
+              </span>
+              <input class="form-control form-control-lg" type="text" id="username" name="username" 
+                     list="username-suggestions" autocomplete="off" required placeholder="Department">
+          </div>
           <datalist id="username-suggestions">
-            <!-- Options will be populated by JavaScript -->
+              <!-- Options will be populated by JavaScript -->
           </datalist>
+      </div> {% endcomment %}
+
+
+
+
+
+
+
+
+
+
+
+      <div class="form-group mb-3 position-relative">
+        <div class="input-group">
+            <span class="input-group-text bg-light">
+                <i class="bi bi-search text-primary"></i>
+            </span>
+            <input class="form-control form-control-lg" type="text" id="username" name="username" autocomplete="off" required placeholder="Department">
         </div>
-        <div class="form-group">
-            <label for="password" style="color: rgb(35, 50, 61)">Contact</label>
-            <input type="password" id="password" name="password" required>
-        </div>
-        <button type="submit" class="login-btn">Login</button>
-     </form> <br>
-     <a href="tel:0549053295" class="text-decoration-none">
-      <i class="bi bi-telephone me-2 text-danger"></i>
-      <span class="text-muted fs-medium">0549053295</span>
-    </a>
+        <div id="suggestions" class="dropdown-suggestions"></div>
     </div>
 
+
+
+
+
+      
+      <div class="form-group mb-3">
+          <div class="input-group">
+              <span class="input-group-text bg-light">
+                  <i class="bi bi-lock text-primary fs-5"></i>
+              </span>
+              <input class="form-control form-control-lg" type="password" id="password" 
+                     name="password" required placeholder="Contact">
+          </div>
+      </div>
+        <button type="submit" class="login-btn">Login</button>
+     </form> <br>
+
+     <a href="tel:0549053295" class="text-decoration-none text-center">
+      <i class="bi bi-telephone me-2 text-danger py-3"></i>
+      <span class="text-muted fs-medium">0549053295</span>
+    </a>
+
+    </div>
+
+
+   
 
     <script>
       const usernameInput = document.getElementById('username');
@@ -95,6 +128,64 @@
       });
       </script>    
 
+
+
+  
+      
+
+<script>
+  const input = document.getElementById('username');
+const suggestionsBox = document.getElementById('suggestions');
+
+input.addEventListener('input', async function() {
+    const query = this.value.trim().toLowerCase();
+    suggestionsBox.innerHTML = '';
+
+    if (!query) {
+        suggestionsBox.style.display = 'none';
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/departments/?q=${encodeURIComponent(query)}`);
+        if (!response.ok) {
+            console.error('API error:', response.status);
+            suggestionsBox.style.display = 'none';
+            return;
+        }
+
+        const usernames = await response.json();
+
+        if (usernames.length > 0) {
+            usernames.forEach(name => {
+                const div = document.createElement('div');
+                div.classList.add('dropdown-item');
+                div.textContent = name;
+                div.addEventListener('click', function() {
+                    input.value = name;
+                    suggestionsBox.style.display = 'none';
+                });
+                suggestionsBox.appendChild(div);
+            });
+            suggestionsBox.style.display = 'block';
+        } else {
+            suggestionsBox.style.display = 'none';
+        }
+    } catch (error) {
+        console.error('Fetch error:', error);
+        suggestionsBox.style.display = 'none';
+    }
+});
+
+// Hide dropdown when clicking outside
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.form-group')) {
+        suggestionsBox.style.display = 'none';
+    }
+});
+
+</script>
+  
 
     
       {% endblock %}

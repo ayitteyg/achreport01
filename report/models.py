@@ -87,53 +87,6 @@ class Department(models.Model):
         return self.name
 
 
-# class AppUser(AbstractUser):
-#     name = models.CharField(max_length=50, blank=True)
-#     church = models.CharField(max_length=25, choices=CHURCH)
-#     department = models.CharField(max_length=50, choices=DEPARTMENT_CHOICES)
-#     contact = models.CharField(max_length=10, blank=True)
-    
-#     # Role flags
-#     is_local = models.BooleanField(default=False)
-#     is_district = models.BooleanField(default=False)
-#     is_officer = models.BooleanField(default=False)
-    
-#     # Add any additional fields here
-    
-#     def __str__(self):
-#         return self.name
-
-
-
-# class AppUserManager(BaseUserManager):
-#     use_in_migrations = True
-
-#     def _create_user(self, contact, password, **extra_fields):
-#         if not contact:
-#             raise ValueError('The Contact field must be set')
-#         user = self.model(contact=contact, **extra_fields)
-#         user.set_password(password)
-#         user.save(using=self._db)
-#         return user
-
-#     def create_user(self, contact, password=None, **extra_fields):
-#         extra_fields.setdefault('is_staff', False)
-#         extra_fields.setdefault('is_superuser', False)
-#         return self._create_user(contact, password, **extra_fields)
-
-#     def create_superuser(self, contact, password, **extra_fields):
-#         extra_fields.setdefault('is_staff', True)
-#         extra_fields.setdefault('is_superuser', True)
-#         extra_fields.setdefault('is_active', True)
-
-#         if extra_fields.get('is_staff') is not True:
-#             raise ValueError('Superuser must have is_staff=True.')
-#         if extra_fields.get('is_superuser') is not True:
-#             raise ValueError('Superuser must have is_superuser=True.')
-
-#         return self._create_user(contact, password, **extra_fields)
-
-
 class AppUserManager(BaseUserManager):
     use_in_migrations = True  # Add this for proper migration support
 
@@ -385,3 +338,22 @@ class Event(models.Model):
 
     def __str__(self):
         return f"{self.event_type} - {self.date}"
+    
+    
+    
+
+
+
+class Treasury(models.Model):
+    church = models.CharField(max_length=25, choices=CHURCH)
+    date = models.DateField()
+    department = models.CharField( max_length=50, choices=DEPARTMENT_CHOICES, default="")
+    returnees = models.PositiveIntegerField()
+    tithe = models.FloatField()
+    combined = models.FloatField()
+    loose = models.FloatField()
+    other_receipts = models.FloatField()
+    payments = models.FloatField()
+   
+    def __str__(self):
+        return f"{self.returnees} - {self.date}"

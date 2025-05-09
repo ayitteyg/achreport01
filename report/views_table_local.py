@@ -1,10 +1,10 @@
-from django.db.models import Count, Q
-from django.db.models.functions import ExtractMonth
+from django.db.models import Count, Q, Sum,F
+from django.db.models.functions import ExtractMonth, ExtractYear
 from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
-from .models import Activity, Visitor
-from .tables import (ActivitySummaryTable, VisitorSummaryTable)
-from .filters import ActivityFilter, VisitorFilter
+from .models import Activity, Visitor, Treasury
+from .tables import (ActivitySummaryTable, VisitorSummaryTable, TreasurySummaryTable)
+from .filters import ActivityFilter, VisitorFilter, TreasuryFilter
 import calendar
 import random
 
@@ -170,5 +170,88 @@ class VisitorSummaryView_local(SingleTableMixin, FilterView):
             "selected_month": selected_month,
             "user_church": self.request.user.church,
         })
+
+        return context
+
+
+
+
+class TreasurySummaryView_local(SingleTableMixin, FilterView):
+    table_class = TreasurySummaryTable
+    template_name = "reports/local/treasury_report.html"
+    filterset_class = TreasuryFilter
+    model = Treasury
+
+    def get_queryset(self):
+        church = self.request.user.church
+        queryset = super().get_queryset()    
+        queryset = queryset.filter(church=church)
+        self.filter = self.filterset_class(self.request.GET, queryset=queryset)
+        return self.filter.qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        qs = self.get_queryset()
+        church = self.request.user.church
+        selected_month = self.request.GET.get("month")
+
+        # === Monthly Summary ===
+        monthly_summary = (
+            qs.annotate(
+                month=ExtractMonth("date"),
+                year=ExtractYear("date")
+            )
+            .values("month", "year")
+            .annotate(
+                returns=Sum(F('tithe') + F('combined') + F('loose')),
+                other_receipts=Sum('other_receipts'),
+                payments=Sum('payments'),
+                count=Count('id')
+            )
+            .order_by("-year", "-month")
+        )
+
+        # Add month names
+        for m in monthly_summary:
+            m["month_name"] = calendar.month_name[m["month"]]
+
+        # === Hierarchical Data ===
+        hierarchical_data = []
+        for month_data in monthly_summary:
+            month = month_data["month"]
+            year = month_data["year"]
+
+            # Get daily records for this month
+            daily_records = (
+                qs.filter(date__year=year, date__month=month)
+                .values(
+                    "date",
+                    "returnees",
+                    "tithe",
+                    "combined",
+                    "loose",
+                    "other_receipts",
+                    "payments"
+                )
+                .order_by("date")
+            )
+
+            # Convert to list and format dates
+            records_list = list(daily_records)
+            for record in records_list:
+                record['date'] = record['date'].strftime('%Y-%m-%d')
+
+            month_data["records"] = records_list
+            hierarchical_data.append(month_data)
+
+        context.update({
+            "filter": self.filter,
+            "monthly_summary": monthly_summary,
+            "hierarchical_data": hierarchical_data,
+            "selected_month": selected_month,
+            "church": church,
+        })
+        
+        print(hierarchical_data)
 
         return context

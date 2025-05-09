@@ -12,13 +12,49 @@ def convert_decimal(obj):
         return float(obj)  # Convert Decimal to float
     elif isinstance(obj, datetime.date):  
         return obj.isoformat()  # Convert date to string (YYYY-MM-DD)
-    elif isinstance(obj, datetime.datetime):  
+    elif isinstance(obj, datetime):  
         return obj.isoformat()  # Convert datetime to string (YYYY-MM-DDTHH:MM:SS)
     elif isinstance(obj, Model):  # Handle Django model instances
         return {field.name: getattr(obj, field.name) for field in obj._meta.fields}  # Convert model to dict
     
     raise TypeError(f"Object of type {obj.__class__.__name__} is not JSON serializable")
 
+
+import json
+from datetime import datetime, date
+import decimal
+from django.db.models import Model
+from django.core.serializers import serialize
+from django.core.exceptions import ValidationError
+
+def convert_decimal(obj):
+    """
+    Custom JSON serializer that handles:
+    - Decimal → float
+    - Date/datetime → ISO string
+    - Django Model → dict of fields
+    - QuerySet → list of dicts
+    """
+    if isinstance(obj, decimal.Decimal):
+        return float(obj)
+    elif isinstance(obj, date):  # Handles both date and datetime
+        return obj.isoformat()
+    elif isinstance(obj, Model):
+        return model_to_dict(obj)
+    elif hasattr(obj, '__iter__') and not isinstance(obj, (str, bytes)):
+        return list(obj)  # Convert querysets/iterables to list
+    raise TypeError(f"Object of type {obj.__class__.__name__} is not JSON serializable")
+
+
+def model_to_dict(instance):
+    """Helper to convert model instance to dict including related fields"""
+    from django.forms.models import model_to_dict
+    data = model_to_dict(instance)
+    for field in instance._meta.get_fields():
+        if field.is_relation and field.many_to_one and field.related_model:
+            if getattr(instance, field.name):
+                data[field.name] = model_to_dict(getattr(instance, field.name))
+    return data
 
 
 

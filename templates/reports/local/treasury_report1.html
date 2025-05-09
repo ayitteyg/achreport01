@@ -1,0 +1,140 @@
+{% extends 'root/base.html' %}
+{% load django_tables2 %}
+{% load static %}
+{% load custom_filters %}
+{% load humanize %}
+
+{% block content %}
+<!--header for navbar-->
+<header>{% include 'root/navbar.html' %}</header>
+
+<div class="container mt-4 text-center">
+   
+    <!-- Breadcrumbs -->
+    <div class="bread-crumb-div">
+        <ol class="breadcrumb text-center">
+            <li class="breadcrumb-item"><a class="fs-medium" href="{% url 'report_dashboard_local' %}"><p class="bi-graph-up-arrow btn btn-primary">&nbsp Dashboard</p></a></li>
+        </ol>
+    </div>
+
+  {% if monthly_summary %}
+    <form method="get" action="{% url 'treasury_report_local' %}">
+        <div class="row g-2">
+            <div class="col-md-3">{{ filter.form.year }}</div>
+            <div class="col-md-3">{{ filter.form.month }}</div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-outline-primary bi bi-filter fs-medium">Filter</button>
+                <a href="{% url 'treasury_report_local' %}" class="btn btn-outline-secondary bi bi-arrow-counterclockwise fs-medium">Reset</a>
+            </div>
+        </div>
+    </form>
+
+    <div class="text-center fs-medium py-3">Church: {{ user.church }}</div>
+    <div><a class="btn btn-outline-primary mt-3 fs-medium" href="{% url 'export_data' %}">Generate Report</a></div>
+    
+    <div class="table-responsive mt-3 box-element5">
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr class="fs-medium">
+                    <th>Month</th>
+                    <th>Returns (₵)</th>
+                    <th>Other Receipts (₵)</th>
+                    <th>Payments (₵)</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody class="table-bordered border-dark">
+                {% for month in hierarchical_data %}
+                <tr id="month-{{ month.month }}-{{ month.year }}">
+                    <td class="text-start">{{ month.month_name }} {{ month.year }}</td>
+                    <td>₵{{ month.returns|default:0|floatformat:2|intcomma }}</td>
+                    <td>₵{{ month.other_receipts|default:0|floatformat:2|intcomma }}</td>
+                    <td>₵{{ month.payments|default:0|floatformat:2|intcomma }}</td>
+                    <td>
+                        <i class="bi bi-caret-down toggle-month"
+                           data-month="{{ month.month }}-{{ month.year }}"
+                           style="cursor: pointer; font-size:1.2rem;"></i>
+                    </td>
+                </tr>
+    
+                <!-- Detailed records row -->
+                <tr id="details-row-{{ month.month }}-{{ month.year }}" style="display: none;">
+                    <td colspan="5">
+                        <div class="card mb-3 mx-auto" style="max-width: 100%;">
+                            <div class="card-header bg-light">
+                                <h5>Weekly Summaries for {{ month.month_name }} {{ month.year }}</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Tithe (₵)</th>
+                                                <th>Combined (₵)</th>
+                                                <th>Loose (₵)</th>
+                                                <th>Other Receipts (₵)</th>
+                                                <th>Payments (₵)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for record in month.records %}
+                                            <tr>
+                                                <td>{{ record.date }}</td>
+                                                <td>₵{{ record.tithe|default:0|floatformat:2|intcomma }}</td>
+                                                <td>₵{{ record.combined|default:0|floatformat:2|intcomma }}</td>
+                                                <td>₵{{ record.loose|default:0|floatformat:2|intcomma }}</td>
+                                                <td>₵{{ record.other_receipts|default:0|floatformat:2|intcomma }}</td>
+                                                <td>₵{{ record.payments|default:0|floatformat:2|intcomma }}</td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="6" class="text-muted">No transactions found</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-muted">No treasury data found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% else %}
+    <div class="text-center no-report-div">
+        <h5 class="py-2">No Treasury report submitted</h5>
+        <img class="no-report-img" src="{% static 'images/no-report.avif' %}" alt="" width=450px height=400px>
+    </div>
+    {% endif %}
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Toggle month details
+        document.addEventListener('click', function(event) {
+            if (event.target.classList.contains('toggle-month')) {
+                const monthYear = event.target.getAttribute('data-month');
+                const detailsRow = document.getElementById(`details-row-${monthYear}`);
+                const icon = event.target;
+                
+                // Toggle display
+                detailsRow.style.display = detailsRow.style.display === 'none' ? 'table-row' : 'none';
+                
+                // Toggle icon
+                icon.classList.toggle('bi-caret-down');
+                icon.classList.toggle('bi-caret-up');
+            }
+        });
+    });
+</script>
+
+{% endblock %}

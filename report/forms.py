@@ -1,7 +1,8 @@
 from django import forms
 from django_select2.forms import Select2Widget
-from .models import Activity, Baptism, Pastor, Transfer, Attendance, Visitor, Dedication, Event
+from .models import Activity, Baptism, Pastor, Transfer, Attendance, Visitor, Dedication, Event, Treasury
 import re
+
 
 class ActivityForm(forms.ModelForm):
     class Meta:
@@ -29,9 +30,7 @@ class BaptismForm(forms.ModelForm):
     class Meta:
         model = Baptism
         fields = '__all__'  # Include all fields from the Baptism model
-    
-
-        
+         
         widgets = {
                 
                 'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
@@ -69,14 +68,11 @@ class TransferForm(forms.ModelForm):
     class Meta:
         model = Transfer
         fields = '__all__'  # Include all fields 
-        widgets = {
-                'date_church_voted': forms.DateInput(attrs={'type': 'date'}),
-                
-            }
+        widgets = {'date_church_voted': forms.DateInput(attrs={'type': 'date'}),}
      
     def clean_contact(self):
         contact = self.cleaned_data.get('contact')
-        print(f"Contact Input: {contact}")  # Debugging
+        print(f"Contact Input transfer: {contact}")  # Debugging
         # Ensure contact is exactly 10 digits and contains only numbers
         if contact and not re.fullmatch(r"^\d{10}$", contact):
             raise forms.ValidationError("Contact number must be exactly 10 digits and contain only numbers.")
@@ -133,10 +129,6 @@ class EventForm(forms.ModelForm):
         }
 
 
-
-# forms.py
-from django.contrib.auth.forms import AuthenticationForm
-
 class PasswordlessAuthForm(forms.Form):
     department = forms.CharField()
     contact = forms.CharField()
@@ -150,3 +142,43 @@ class PasswordlessAuthForm(forms.Form):
             # No password needed - we'll generate it automatically
             return cleaned_data
         raise forms.ValidationError("Both department and contact are required")
+
+
+
+
+class TreasuryForm(forms.ModelForm):
+    class Meta:
+        model = Treasury
+        fields = ['church', 'date', 'department', 'returnees', 'tithe', 'combined', 'loose', 'other_receipts', 'payments']
+
+        widgets = {
+            'department': Select2Widget(attrs={
+                'data-placeholder': 'Type to search...', 
+                'style': 'width: 100%'
+            }),
+            'date': forms.DateInput(attrs={'type': 'date'}),
+            # Add currency placeholders to numeric fields
+            'tithe': forms.NumberInput(attrs={
+                'placeholder': 'GH₵ 0.00',
+                'step': '0.01'  # Allows decimal values
+            }),
+            'combined': forms.NumberInput(attrs={
+                'placeholder': 'GH₵ 0.00',
+                'step': '0.01'
+            }),
+            'loose': forms.NumberInput(attrs={
+                'placeholder': 'GH₵ 0.00',
+                'step': '0.01'
+            }),
+            'other_receipts': forms.NumberInput(attrs={
+                'placeholder': 'GH₵ 0.00',
+                'step': '0.01'
+            }),
+            'payments': forms.NumberInput(attrs={
+                'placeholder': 'GH₵ 0.00',
+                'step': '0.01'
+            }),
+        }
+
+        
+   

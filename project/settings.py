@@ -10,6 +10,14 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+
+""" 
+pip install Faker psycopg2 reportlab openpyxl django-import-export xlsxwriter pandas django python-dotenv django-environ dj-database-url psycopg2-binary djangorestframework djangorestframework-simplejwt django-crispy-forms crispy-bootstrap5 django-tables2 django-filter django-select2 django-import-export channels django-plotly-dash dpd-static-support google-auth google-api-python-client django-htmx whitenoise ipython django-debug-toolbar pytest-django
+
+"""
+
+
+
 from pathlib import Path
 import os
 import environ
@@ -89,6 +97,7 @@ INSTALLED_APPS = [
     'django_select2',
     'django_tables2',
     'django_filters',
+    'django.contrib.humanize',
     
     
     #ploty dash

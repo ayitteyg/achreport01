@@ -238,103 +238,7 @@ class PdfHeaderDist:
         header_content.append(info_table)
         header_content.append(Spacer(1, 0.3*inch))
        
-       
-        
         return header_content
-
-
-class ChurchDataExporter_error:
-    """
-    Filters a model by church, and date range.
-    Exports data to Excel or PDF.
-    """
-
-    def __init__(self, model, date_field="date"):
-        """
-        :param model: Django model class
-        :param date_field: The field name to use for date filtering (default is 'date')
-        """
-        self.model = model
-        self.date_field = date_field
-        self.queryset = None
-
-    def filter_data(self, church=None, start_date=None, end_date=None):
-        """Applies filters based on church, and date range."""
-        query = Q()
-
-        if church:
-            query &= Q(church__icontains=church)
-
-        if start_date and end_date:
-            # Use dynamic date field
-            date_filter = {f"{self.date_field}__range": [start_date, end_date]}
-            query &= Q(**date_filter)
-
-        self.queryset = self.model.objects.filter(query)
-        return self.queryset
-
-
-
-
-    def export_to_excel(self, fields, filename="church_data.xlsx"):
-        """Exports filtered data to Excel."""
-        if not self.queryset:
-            raise ValueError("No data filtered. Call filter_data() first.")
-
-        #df = pd.DataFrame(list(self.queryset.values()))
-        df = pd.DataFrame(list(self.queryset.values(*fields)))
-        output = BytesIO()
-        
-        with pd.ExcelWriter(output, engine='openpyxl') as writer:
-            df.to_excel(writer, index=False, sheet_name='Church Data')
-        
-        output.seek(0)
-        
-        response = HttpResponse(
-            output.read(),
-            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        )
-        response['Content-Disposition'] = f'attachment; filename="{filename}"'
-        return response
-
-    
-    def export_to_pdf(self, fields, filename="church_data.pdf"):
-        if not self.queryset:
-            raise ValueError("No data filtered. Call filter_data() first.")
-        # Use selected fields instead of all
-        buffer = BytesIO()
-        pdf = canvas.Canvas(buffer, pagesize=letter)
-        pdf.setTitle(filename)
-        y_position = 750
-        pdf.setFont("Helvetica-Bold", 12)
-
-        # Draw headers
-        for i, header in enumerate(fields):
-            pdf.drawString(50 + (i * 120), y_position, header.upper())
-
-        y_position -= 30
-        pdf.setFont("Helvetica", 10)
-        for record in self.queryset:
-            for i, field in enumerate(fields):
-                value = str(getattr(record, field))
-                pdf.drawString(50 + (i * 120), y_position, value)
-            y_position -= 20
-            if y_position < 50:
-                pdf.showPage()
-                y_position = 750
-                pdf.setFont("Helvetica-Bold", 12)
-                for i, header in enumerate(fields):
-                    pdf.drawString(50 + (i * 120), y_position, header.upper())
-                y_position -= 30
-                pdf.setFont("Helvetica", 10)
-
-        pdf.save()
-        buffer.seek(0)
-        return HttpResponse(
-            buffer.read(),
-            content_type='application/pdf',
-            headers={'Content-Disposition': f'attachment; filename="{filename}"'}
-        )
 
 
 class ChurchDataExporter:
@@ -540,7 +444,7 @@ class ChurchDataExporter:
         return HttpResponse(
             buffer.read(),
             content_type='application/pdf',
-            headers={'Content-Disposition': f'attachment; filename="{filename}"'}
+            headers={'Content-Disposition': f'inline; filename="{filename}"'}
         )
 
 
@@ -742,11 +646,8 @@ class ReportDataExporter_error:
         return HttpResponse(
             buffer.read(),
             content_type='application/pdf',
-            headers={'Content-Disposition': f'attachment; filename="{filename}"'}
+            headers={'Content-Disposition': f'inline; filename="{filename}"'}
         )
-
-
-
 
 
 
@@ -839,6 +740,7 @@ class ReportDataExporter:
         self.queryset = self.model.objects.filter(query)
         return self.queryset
 
+
     def export_to_excel(self, fields, filename=None):
         """Exports filtered data to Excel."""
         if not self.queryset:
@@ -861,6 +763,8 @@ class ReportDataExporter:
         )
         response['Content-Disposition'] = f'attachment; filename="{filename}"'
         return response
+    
+    
     
     def export_to_pdf(self, fields, filename=None, report_info=None):
         """Exports filtered data to PDF with custom styling."""
@@ -962,7 +866,7 @@ class ReportDataExporter:
         return HttpResponse(
             buffer.read(),
             content_type='application/pdf',
-            headers={'Content-Disposition': f'attachment; filename="{filename}"'}
+            headers={'Content-Disposition': f'inline; filename="{filename}"'}
         )
 
 
@@ -1159,5 +1063,5 @@ class ReportDataExporterDist:
         return HttpResponse(
             buffer.read(),
             content_type='application/pdf',
-            headers={'Content-Disposition': f'attachment; filename="{filename}"'}
+            headers={'Content-Disposition': f'inline; filename="{filename}"'}
         )

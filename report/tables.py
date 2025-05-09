@@ -2,10 +2,11 @@
 
 import django_tables2 as tables
 from django.db.models import Count, Q, F, Func, IntegerField, Value, When, Case
-from .models import Baptism, Transfer, Dedication, Activity, Visitor
+from .models import Baptism, Transfer, Dedication, Activity, Visitor, Treasury
 from django.utils.safestring import mark_safe
 import django_tables2 as tables
 from django.utils.html import format_html
+from django.urls import reverse
 
 class ExtractYear(Func):
     function = 'EXTRACT'
@@ -154,7 +155,7 @@ class VisitorSummaryTable(tables.Table):
     total_adventist = tables.Column(verbose_name="Adventist")
     total_non_adventist = tables.Column(verbose_name="Non-Adventist")
     total_visitors = tables.Column(verbose_name="Total Visitors")
-    action = tables.Column(empty_values=(), orderable=False, verbose_name="Actions")
+    detail = tables.Column(empty_values=(), orderable=False, verbose_name="Actions")
 
     def render_total_visitors(self, value, record):
         return record['total_adventist'] + record['total_non_adventist']
@@ -172,3 +173,75 @@ class VisitorSummaryTable(tables.Table):
                 'class': 'thead-light'
             }
         }
+
+
+class TreasurySummaryTable(tables.Table):
+    month = tables.Column(verbose_name='Month')
+    returns = tables.Column(verbose_name='Total Returns (₵)')
+    other_receipts = tables.Column(verbose_name='Other Receipts (₵)')
+    payments = tables.Column(verbose_name='Payments (₵)')
+    details = tables.Column(verbose_name='Actions', empty_values=(), orderable=False)
+
+    class Meta:
+        attrs = {
+            'class': 'table table-striped table-bordered',
+            'thead': {
+                'class': 'table-light'
+            }
+        }
+
+    def render_returns(self, value):
+        return f"{value:,.2f}"
+
+    def render_other_receipts(self, value):
+        return f"{value:,.2f}"
+
+    def render_payments(self, value):
+        return f"{value:,.2f}"
+    
+    
+    
+    def render_detail(self, record):
+        return format_html(
+            '<a href="?month={}" class="btn btn-sm btn-info">View Detail</a>',
+            record['month']
+        )
+
+
+
+
+# class TreasurySummaryTable(tables.Table):
+#     month = tables.Column(verbose_name='Month')
+#     returns = tables.Column(verbose_name='Total Returns (₵)')
+#     other_receipts = tables.Column(verbose_name='Other Receipts (₵)')
+#     payments = tables.Column(verbose_name='Payments (₵)')
+#     details = tables.Column(verbose_name='Actions', empty_values=(), orderable=False)
+
+#     class Meta:
+#         attrs = {
+#             'class': 'table table-striped table-bordered',
+#             'thead': {
+#                 'class': 'table-light'
+#             }
+#         }
+#         # fields = ('month', 'returns', 'other_receipts', 'payments', 'details')
+#         # order_by = ('-year', '-month')
+
+#     def render_returns(self, value):
+#         return f"{value:,.2f}"
+
+#     def render_other_receipts(self, value):
+#         return f"{value:,.2f}"
+
+#     def render_payments(self, value):
+#         return f"{value:,.2f}"
+
+#     def render_details(self, record):
+#         return format_html(
+#             '<button class="btn btn-sm btn-outline-primary toggle-month" data-month="{}-{}">'
+#             '<i class="bi bi-caret-down"></i> Details'
+#             '</button>',
+#             # record['month'], record['year']
+#         )
+        
+   

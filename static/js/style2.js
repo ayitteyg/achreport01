@@ -132,10 +132,7 @@ confirmFormSubmission("attendance-form-id", "Do you want to submit this data?");
 confirmFormSubmission("visitor-form-id", "Do you want to submit this data?");
 confirmFormSubmission("dedication-form-id", "Do you want to submit this data?");
 confirmFormSubmission("event-form-id", "Do you want to submit this data?");
-
-
-
-
+confirmFormSubmission("treasury-form-id", "Do you want to submit this data?");
 
 
 

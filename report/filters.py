@@ -1,7 +1,7 @@
 # report/filters.py
 
 import django_filters
-from .models import Baptism, Transfer, Attendance, Visitor, Event, Dedication, Activity, Department
+from .models import Baptism, Transfer, Attendance, Visitor, Event, Dedication, Activity, Department, Treasury
 from django.db.models.functions import ExtractYear, ExtractMonth, ExtractWeek
 
 
@@ -274,3 +274,52 @@ class VisitorFilter(django_filters.FilterSet):
         # Get distinct churches for the church filter
         #churches = Visitor.objects.values_list('church', flat=True).distinct()
         #self.filters['church'].field.queryset = churches
+
+
+
+
+import django_filters
+from django.db.models.functions import ExtractYear
+from django import forms
+from .models import Treasury
+
+class TreasuryFilter(django_filters.FilterSet):
+    
+    church = django_filters.ChoiceFilter(
+        field_name='church',
+        choices=[('', 'All Churches')] + list(Treasury._meta.get_field('church').choices),
+        label='Church',
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
+    department = django_filters.ModelChoiceFilter(
+        field_name='department',
+        queryset=Department.objects.all(),
+        label='Department',
+        empty_label='All Departments',
+    )
+
+
+    year = django_filters.ChoiceFilter(
+        field_name='date',
+        lookup_expr='year',
+        label='Year',
+        choices=[],
+        
+    )
+
+    class Meta:
+        model = Treasury
+        fields = ['church', 'year']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # Dynamically populate year choices
+        years = (
+            Treasury.objects.annotate(year=ExtractYear('date'))
+            .values_list('year', flat=True)
+            .distinct()
+            .order_by('-year')
+        )
+        self.filters['year'].extra['choices'] = [(y, y) for y in years]

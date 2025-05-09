@@ -16,7 +16,7 @@ from .view_table_officer import ( BaptismSummaryView_of, TransferSummaryView_of,
                               )
 
 
-from .views_table_local import(ActivitySummaryView_local, VisitorSummaryView_local)
+from .views_table_local import(ActivitySummaryView_local, VisitorSummaryView_local, TreasurySummaryView_local)
 
 from .exporters import (export_church_data, get_model_fields,
                         export_data, get_model_fields_local,
@@ -74,6 +74,7 @@ urlpatterns = [
       path('reports/local/', base_report_page_view_local, name='report_dashboard_local'),
       path('reports/local/program-activity/', ActivitySummaryView_local.as_view(), name='activity_report_local'),
       path('reports/local/interest-cordinator/', VisitorSummaryView_local.as_view(), name='visitor_report_local'),
+      path('reports/local/treasury/', TreasurySummaryView_local.as_view(), name='treasury_report_local'),
       path('export_data/', export_data, name='export_data'),
       path('get-model-fields-local/', get_model_fields_local, name='get_model_fields_local'),
       

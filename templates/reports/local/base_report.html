@@ -50,12 +50,18 @@
                    </tbody>
                 </table>
                  
-               <div class="report-action-btn"> 
+
+              {% if request.user.department == 'Treasury' %}
+              <a  class="btn btn-outline-primary mt-3 fs-medium" href="{% url 'treasury_report_local' %}">View Summary Report</a>
+              {% else %}
+              <div class="report-action-btn"> 
                 <a  class="btn btn-outline-primary mt-3 fs-medium" href="{% url 'activity_report_local' %}">View Activity Report</a>
                 <!--<a  class="btn btn-outline-primary mt-3 fs-medium" href="{% url 'export_data' %}">Generate Report</a>-->
                 <a  class="btn btn-outline-primary mt-3 fs-medium" href="#">Document & Files</a>
               </div>
-              
+              {% endif %}
+
+             
                
 
 

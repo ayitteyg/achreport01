@@ -10,9 +10,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import FormView
 from .drive_service import upload_json_to_drive
 from django.views.generic import TemplateView
-from .forms import ActivityForm, BaptismForm, TransferForm, AttendanceForm, VisitorForm, DedicationForm, EventForm # Add all forms you need
+from .forms import (ActivityForm, BaptismForm, TransferForm, AttendanceForm,
+                    VisitorForm, DedicationForm, EventForm, TreasuryForm )# Add all forms you need
 from django.http import JsonResponse
-from .models import Department, Activity, Baptism, Transfer, Attendance, Visitor, Dedication, Event
+from .models import Department, Activity, Baptism, Transfer, Attendance, Visitor, Dedication, Event, Treasury
 from django.contrib.auth import get_user_model
 import json
 from django.contrib.auth.decorators import login_required
@@ -34,17 +35,17 @@ User = get_user_model()
 
 # deleted_count, deletion_details = reset_model_data(Baptism)
 # print(f"Deleted {deleted_count} records from {Baptism.__name__}")
-#print_model_objects(Activity)
+#print_model_objects(Treasury)
 
 # Get all usernames as a list
 #usernames = list(User.objects.values_list('contact', flat=True))
 
 #print(usernames)
 
-#reset_model_data(Attendance)
+#reset_model_data(Treasury)
 # Reset all data in MyModel
-#convert_to_json(file='attendance')
-#load_json_model(file='attendance', model=Attendance)
+#convert_to_json(file='treasury')
+#load_json_model(file='treasury', model=Treasury)
 
 
 
@@ -63,8 +64,8 @@ class CustomLoginView(View):
         department = request.POST.get('username')
         contact = request.POST.get('password')
         
-        print(department)
-        print(contact)
+        #print(department)
+        #print(contact)
         
         if not department or not contact:
             return redirect('login_failed')
@@ -101,8 +102,8 @@ class CustomLoginView(FormView):
         department = form.cleaned_data['department']
         contact = form.cleaned_data['contact']
         
-        print(department)
-        print(contact)
+        #print(department)
+        #print(contact)
         
         # Authenticate using our custom backend
         user = PasswordlessAuthBackend().authenticate(
@@ -180,6 +181,7 @@ class SubmitFormsView(generic.TemplateView):
         "visitor": VisitorForm,
         "dedication": DedicationForm,
         "event": EventForm,
+        "treasury":TreasuryForm,
     }
 
     form_info = [
@@ -218,6 +220,12 @@ class SubmitFormsView(generic.TemplateView):
             "description": "Record special church events like marriages, funerals, others.",
             "form_key": "event"
         },
+        
+        {
+            "name": "Treasury", "icon": "bi-cash-stack",
+            "description": "Record summary treasury activities; tithe, combined, and other offerings.",
+            "form_key": "treasury"
+        },
     ]
 
     def get_context_data(self, **kwargs):
@@ -225,6 +233,7 @@ class SubmitFormsView(generic.TemplateView):
         for key, form_class in self.form_classes.items():
             context[f'{key}_form'] = form_class()
         context['form_info'] = self.form_info
+       # print(context)
         return context
 
     def post(self, request, *args, **kwargs):
@@ -233,9 +242,17 @@ class SubmitFormsView(generic.TemplateView):
             context[f'{key}_form'] = form_class(request.POST)
 
         for key, form in context.items():
-            if isinstance(form, (ActivityForm, BaptismForm, TransferForm, AttendanceForm, VisitorForm, DedicationForm, EventForm)) and form.is_valid():
+            if isinstance(form, (ActivityForm, BaptismForm, TransferForm, AttendanceForm, 
+VisitorForm, DedicationForm, EventForm, TreasuryForm)) and form.is_valid():
+                
+                #print(form)
+                
                 instance = form.save(commit=False)
                 instance.user = request.user
+                
+                #print('user')
+                #print(instance.user)
+                
                 instance.save()
 
                 # Upload corresponding data to Google Drive
@@ -247,11 +264,12 @@ class SubmitFormsView(generic.TemplateView):
                     'visitor_form': (Visitor, 'visitors.json'),
                     'dedication_form': (Dedication, 'dedications.json'),
                     'event_form': (Event, 'events.json'),
+                    'treasury_form': (Treasury, 'treasury.json'),
                 }
 
                 model_class, filename = model_map[key]
                 data = list(model_class.objects.values())
-                #upload_json_to_drive(filename, data)
+                upload_json_to_drive(filename, data)
 
                 if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
                     return JsonResponse({"message": "Report submitted successfully!"})
@@ -259,6 +277,8 @@ class SubmitFormsView(generic.TemplateView):
 
         # If no form is valid, return the first form's errors
         for form in context.values():
+            #print()
+            #print(" contect values",context.values())
             if hasattr(form, 'errors') and form.errors:
                 if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                     return JsonResponse({"errors": form.errors}, status=400)
