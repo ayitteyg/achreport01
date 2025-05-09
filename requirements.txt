@@ -98,4 +98,4 @@ wcwidth==0.2.13
 Werkzeug==3.0.6
 whitenoise==6.9.0
 XlsxWriter==3.2.3
-zipp==3.21.0
+zipp==3.21.0gunicorn==20.1.0
