@@ -269,7 +269,7 @@ VisitorForm, DedicationForm, EventForm, TreasuryForm)) and form.is_valid():
 
                 model_class, filename = model_map[key]
                 data = list(model_class.objects.values())
-                upload_json_to_drive(filename, data)
+                #upload_json_to_drive(filename, data)
 
                 if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
                     return JsonResponse({"message": "Report submitted successfully!"})
