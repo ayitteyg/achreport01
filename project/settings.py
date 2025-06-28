@@ -88,7 +88,7 @@ DEBUG = False
 
 # ALLOWED_HOSTS = ['*']
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'achreport01.onrender.com']
 
 AUTH_USER_MODEL = 'report.AppUser'  # Changed to match new name
 
