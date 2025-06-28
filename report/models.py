@@ -130,33 +130,7 @@ class AppUserManager(BaseUserManager):
         import re
         return re.sub(r'[^\d]', '', contact)
 
-
-
-# class AppUser(AbstractUser):
-#     name = models.CharField(max_length=50, blank=True)
-#     church = models.CharField(max_length=25, choices=CHURCH)
-#     department = models.CharField(max_length=50, choices=DEPARTMENT_CHOICES)
-#     contact = models.CharField(max_length=10, blank=True, unique=True)  # Make contact unique
-    
-#     # Role flags
-#     is_local = models.BooleanField(default=False)
-#     is_district = models.BooleanField(default=False)
-#     is_officer = models.BooleanField(default=False)
-    
-#     USERNAME_FIELD = 'contact'  # Use contact as the username
-#     REQUIRED_FIELDS = ['department']  # Required when creating superuser
-    
-#     objects = AppUserManager()  # Add this line
-    
-#     def save(self, *args, **kwargs):
-#         if not self.pk:  # Only for new users
-#             self.set_password(f"{self.contact}{self.department}")
-#         super().save(*args, **kwargs)
-    
-#     def __str__(self):
-#         return self.name
-    
-    
+   
 class AppUser(AbstractUser):
     # Remove username from fields
     username = None

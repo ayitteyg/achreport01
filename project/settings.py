@@ -16,6 +16,11 @@ pip install Faker psycopg2 reportlab openpyxl django-import-export xlsxwriter pa
 
 """
 
+"""
+from django.core.management.utils import get_random_secret_key
+print(get_random_secret_key()) 
+
+"""
 
 
 from pathlib import Path
@@ -69,13 +74,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-3!yvz19*4kzbh$aj196hdzp9#n=1om7o_=l^inrb%(#h40!lj-'
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+if not SECRET_KEY:
+    raise ValueError("DJANGO_SECRET_KEY environment variable is not set")
+
+
+# Initialize environment variables
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ['*']
+
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 AUTH_USER_MODEL = 'report.AppUser'  # Changed to match new name
 
@@ -165,21 +178,28 @@ DATABASES = {
 }
 
 
-# Alternative: Parse DATABASE_URL directly (if using a single env variable)
-if 'DATABASE_URL' in os.environ:
-    db_url = urlparse(os.getenv('DATABASE_URL'))
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': db_url.path[1:],  # Removes leading '/'
-        'USER': db_url.username,
-        'PASSWORD': db_url.password,
-        'HOST': db_url.hostname,
-        'PORT': db_url.port or 5432,
-        'OPTIONS': {
-            # 'sslrootcert': os.path.join(BASE_DIR, 'prod-ca-2021.crt'),
-            'connect_timeout': 10,
-        },
-    }
+# DATABASES = {}
+
+# if 'DATABASE_URL' in os.environ:
+#     db_url = urlparse(os.getenv('DATABASE_URL'))
+#     DATABASES['default'] = {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': db_url.path[1:],  # removes leading '/'
+#         'USER': db_url.username,
+#         'PASSWORD': db_url.password,
+#         'HOST': db_url.hostname,
+#         'PORT': db_url.port or 5432,
+#         'OPTIONS': {
+#             'connect_timeout': 10,
+#             'sslmode': 'require',
+#         },
+#     }
+# else:
+#     DATABASES['default'] = {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
